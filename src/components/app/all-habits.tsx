@@ -2,9 +2,10 @@
 
 import type { Habit } from "@/lib/data";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Trash2, ChevronRight } from "lucide-react";
 import { Card } from "../ui/card";
 import * as icons from "lucide-react";
+import Link from "next/link";
 
 type AllHabitsProps = {
   habits: Habit[];
@@ -27,22 +28,31 @@ export function AllHabits({ habits, onDelete }: AllHabitsProps) {
       {habits.map((habit) => {
         const Icon = (icons as any)[habit.icon] || icons.Activity;
         return (
-          <div
-            key={habit.id}
-            className="flex items-center rounded-lg border p-3 bg-card"
-          >
-            <Icon className="h-5 w-5 mr-4 text-primary" />
-            <div className="flex-1">
-              <p className="font-medium">{habit.name}</p>
-              <p className="text-sm text-muted-foreground">{habit.description}</p>
+          <Link href={`/habits/${habit.id}`} key={habit.id} className="block group">
+            <div
+              className="flex items-center rounded-lg border p-3 bg-card group-hover:bg-accent transition-colors"
+            >
+              <div className={("flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary")}>
+                <Icon className="h-5 w-5" />
+              </div>
+              <div className="flex-1 ml-4">
+                <p className="font-medium">{habit.name}</p>
+                <p className="text-sm text-muted-foreground">{habit.description}</p>
+              </div>
+              {onDelete ? (
+                  <Button variant="ghost" size="icon" onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onDelete(habit.id);
+                  }} className="h-8 w-8 flex-shrink-0 text-destructive hover:bg-destructive/20 z-10 relative">
+                      <Trash2 className="h-4 w-4" />
+                      <span className="sr-only">Delete habit</span>
+                  </Button>
+              ) : (
+                <ChevronRight className="h-5 w-5 text-muted-foreground" />
+              )}
             </div>
-            {onDelete && (
-                <Button variant="ghost" size="icon" onClick={() => onDelete(habit.id)} className="h-8 w-8 flex-shrink-0 text-destructive">
-                    <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">Delete habit</span>
-                </Button>
-            )}
-          </div>
+          </Link>
         )
       })}
     </div>

@@ -1,3 +1,9 @@
+export type HabitHistory = {
+  date: string;
+  status: "completed" | "missed" | "logged";
+  details: string;
+};
+
 export type Habit = {
   id: string;
   name: string;
@@ -5,16 +11,72 @@ export type Habit = {
   icon: string; // lucide-react icon name
   status: "completed" | "pending";
   priority?: "Low" | "Medium" | "High";
+  goal?: string;
+  streak?: {
+    current: number;
+    personalBest: number;
+  };
+  stats?: {
+    total: string;
+    rate: string;
+    avg: string;
+  };
+  weeklyCompletion?: {
+    percentage: number;
+    change: string;
+    data: { day: string; value: number }[];
+  };
+  history?: HabitHistory[];
 };
 
 export const habits: Habit[] = [
   {
     id: "1",
-    name: "Drink 2L Water",
-    description: "Done at 08:32 AM",
+    name: "Drink Water",
+    description: "Daily goal: 2.5L",
     icon: "Droplet",
     status: "completed",
     priority: "Medium",
+    goal: "2.5L daily",
+    streak: {
+      current: 12,
+      personalBest: 24,
+    },
+    stats: {
+      total: "142",
+      rate: "92%",
+      avg: "2.1L",
+    },
+    weeklyCompletion: {
+      percentage: 85,
+      change: "+15% WEEK",
+      data: [
+        { day: "M", value: 40 },
+        { day: "T", value: 60 },
+        { day: "W", value: 90 },
+        { day: "T", value: 70 },
+        { day: "F", value: 45 },
+        { day: "S", value: 80 },
+        { day: "S", value: 30 },
+      ],
+    },
+    history: [
+      {
+        date: "Today, 8:45 AM",
+        status: "logged",
+        details: "250ml logged",
+      },
+      {
+        date: "Yesterday, 9:20 PM",
+        status: "completed",
+        details: "Daily goal met",
+      },
+      {
+        date: "Oct 24, 2023",
+        status: "missed",
+        details: "Goal missed by 400ml",
+      },
+    ],
   },
   {
     id: "2",

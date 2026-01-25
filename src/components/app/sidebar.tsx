@@ -10,11 +10,9 @@ import {
   User,
   Settings,
   Target,
-  Plus,
   Compass,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useHabits } from "@/components/app/habit-provider";
 
 const mainNavItems = [
   { href: "/dashboard", label: "Today", icon: Home },
@@ -31,7 +29,6 @@ const secondaryNavItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { setIsAddDialogOpen } = useHabits();
 
   return (
     <aside className="hidden md:flex flex-col w-64 border-r bg-card">
@@ -42,28 +39,22 @@ export function Sidebar() {
         </Link>
       </div>
       <div className="flex-1 flex flex-col justify-between p-4">
-        <div className="space-y-4">
-            <Button className="w-full h-12 text-lg" onClick={() => setIsAddDialogOpen(true)}>
-                <Plus className="mr-2 h-5 w-5" />
-                New Habit
-            </Button>
-            <nav className="mt-4 space-y-1">
-            {mainNavItems.map((item) => {
-                const isActive = pathname.startsWith(item.href);
-                return (
-                <Link key={item.label} href={item.href}>
-                    <Button
-                    variant={isActive ? "secondary" : "ghost"}
-                    className="w-full justify-start h-11 text-base"
-                    >
-                    <item.icon className="mr-3 h-5 w-5" />
-                    {item.label}
-                    </Button>
-                </Link>
-                );
-            })}
-            </nav>
-        </div>
+        <nav className="space-y-1">
+        {mainNavItems.map((item) => {
+            const isActive = pathname.startsWith(item.href);
+            return (
+            <Link key={item.label} href={item.href}>
+                <Button
+                variant={isActive ? "secondary" : "ghost"}
+                className="w-full justify-start h-11 text-base"
+                >
+                <item.icon className="mr-3 h-5 w-5" />
+                {item.label}
+                </Button>
+            </Link>
+            );
+        })}
+        </nav>
         <nav className="space-y-1">
              {secondaryNavItems.map((item) => {
                 const isActive = pathname.startsWith(item.href);

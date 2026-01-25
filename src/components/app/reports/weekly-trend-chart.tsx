@@ -4,12 +4,7 @@ import { Bar, BarChart, ResponsiveContainer, XAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
 
-const data = [
-  { week: "W1", value: 65 },
-  { week: "W2", value: 72 },
-  { week: "W3", value: 80 },
-  { week: "W4", value: 85 },
-];
+const data: { week: string; value: number }[] = [];
 
 const chartConfig = {
   value: {
@@ -22,7 +17,7 @@ export function WeeklyTrendChart() {
     <Card className="bg-card">
       <CardHeader className="flex-row items-center justify-between pb-2">
         <CardTitle className="font-headline text-xl">Weekly Trend</CardTitle>
-        <p className="text-sm font-semibold text-primary">+12% vs last month</p>
+        <p className="text-sm font-semibold text-primary">+0% vs last month</p>
       </CardHeader>
       <CardContent>
         <div className="h-24">

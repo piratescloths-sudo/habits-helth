@@ -3,8 +3,8 @@ import { Pie, PieChart, ResponsiveContainer, Cell } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
 
-const achieved = 80;
-const partial = 5;
+const achieved = 0;
+const partial = 0;
 const totalAchieved = achieved + partial;
 
 const data = [
@@ -67,12 +67,12 @@ export function OverallCompletionChart() {
         <div className="mt-6 grid w-full grid-cols-2 gap-4 text-center">
           <div className="rounded-lg bg-background/50 p-4">
             <p className="text-xs font-semibold text-muted-foreground uppercase">Total Habits</p>
-            <p className="text-3xl font-bold">128</p>
+            <p className="text-3xl font-bold">0</p>
           </div>
           <div className="rounded-lg bg-background/50 p-4">
             <p className="text-xs font-semibold text-muted-foreground uppercase">Active Streak</p>
             <div className="flex items-center justify-center gap-2">
-              <p className="text-3xl font-bold">12</p>
+              <p className="text-3xl font-bold">0</p>
               <TrendingUp className="h-5 w-5 text-primary" />
             </div>
           </div>

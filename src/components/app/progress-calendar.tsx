@@ -16,9 +16,9 @@ export function ProgressCalendar() {
     setMonth(today);
   }, []);
 
-  const completedDays = [2, 15, 25];
-  const missedDays = [5, 18];
-  const skippedDays = [10, 22];
+  const completedDays: number[] = [];
+  const missedDays: number[] = [];
+  const skippedDays: number[] = [];
 
   if (!isClient) {
     return <Skeleton className="h-[350px] w-full rounded-md" />;

@@ -1,7 +1,5 @@
 "use client";
 
-import { ProgressCalendar } from "@/components/app/progress-calendar";
-import { WeeklyChart } from "@/components/app/weekly-chart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useHabits } from "@/components/app/habit-provider";
 import { AllHabits } from "@/components/app/all-habits";
@@ -17,22 +15,6 @@ export default function ProgressPage() {
         </CardHeader>
         <CardContent>
           <AllHabits habits={habits} />
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-headline">Monthly View</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ProgressCalendar />
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-headline">Weekly Performance</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <WeeklyChart />
         </CardContent>
       </Card>
     </div>

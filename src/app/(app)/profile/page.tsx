@@ -5,37 +5,18 @@ import Link from "next/link";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   ChevronLeft,
   Settings,
-  StretchHorizontal,
-  Zap,
   Sun,
   Moon,
 } from "lucide-react";
 import { StreakOverview } from "@/components/app/streak-overview";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
-import { useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
+import { useUser, useFirestore, useDoc, useMemoFirebase, setDocumentNonBlocking } from "@/firebase";
 import { UserProfile } from "@/lib/data";
 import { doc } from 'firebase/firestore';
 import { Skeleton } from "@/components/ui/skeleton";
-
-const goals = [
-  {
-    name: "Fitness",
-    icon: StretchHorizontal,
-    habits: 4,
-    progress: 80,
-  },
-  {
-    name: "Productivity",
-    icon: Zap,
-    habits: 2,
-    progress: 45,
-  },
-];
 
 type TimePreference = "Morning" | "Afternoon" | "Night";
 
@@ -51,7 +32,12 @@ export default function ProfilePage() {
   const { data: userProfile, isLoading } = useDoc<UserProfile>(userProfileRef);
 
   const profileImage = PlaceHolderImages.find((p) => p.id === "profile");
-  const [preferredTime, setPreferredTime] = useState<TimePreference>("Morning");
+  
+  const handlePreferredTimeChange = (time: TimePreference) => {
+    if (userProfileRef) {
+      setDocumentNonBlocking(userProfileRef, { preferredTime: time }, { merge: true });
+    }
+  };
 
   if (isLoading || !userProfile) {
     return (
@@ -70,6 +56,8 @@ export default function ProfilePage() {
         </div>
     )
   }
+  
+  const preferredTime = userProfile.preferredTime || "Morning";
 
   return (
     <div className="space-y-6 -mx-4 md:-mx-8 -mt-6 md:-mt-8">
@@ -128,47 +116,12 @@ export default function ProfilePage() {
         </Link>
       </div>
 
-      {/* My Goals */}
-      <div className="space-y-4 px-4">
-        <div className="flex justify-between items-center">
-          <h3 className="text-lg font-bold font-headline">My Goals</h3>
-          <Link href="#" className="text-primary font-semibold text-sm">
-            View All
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          {goals.map((goal) => {
-            const Icon = goal.icon;
-            return (
-              <Card key={goal.name} className="p-4 bg-card">
-                <CardContent className="p-0 flex flex-col justify-between h-full">
-                  <div className="flex justify-between items-start">
-                    <div className="h-10 w-10 flex items-center justify-center bg-primary/20 rounded-lg">
-                      <Icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <span className="font-bold text-primary">
-                      {goal.progress}%
-                    </span>
-                  </div>
-                  <div className="mt-6">
-                    <h4 className="font-bold text-lg">{goal.name}</h4>
-                    <p className="text-xs text-muted-foreground">
-                      {goal.habits} Active Habits
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      </div>
-
       {/* Preferred Habit Time */}
       <div className="space-y-4 px-4">
         <h3 className="text-lg font-bold font-headline">Preferred Habit Time</h3>
         <div className="grid grid-cols-3 gap-1 bg-card p-1 rounded-xl">
           <Button
-            onClick={() => setPreferredTime("Morning")}
+            onClick={() => handlePreferredTimeChange("Morning")}
             className={cn(
               "flex-1 justify-center gap-2 h-14 text-base font-semibold",
               preferredTime === "Morning"
@@ -179,7 +132,7 @@ export default function ProfilePage() {
             <Sun className="h-5 w-5" /> Morning
           </Button>
           <Button
-            onClick={() => setPreferredTime("Afternoon")}
+            onClick={() => handlePreferredTimeChange("Afternoon")}
             className={cn(
               "flex-1 justify-center gap-2 h-14 text-base font-semibold",
               preferredTime === "Afternoon"
@@ -190,7 +143,7 @@ export default function ProfilePage() {
             <Sun className="h-5 w-5" /> Afternoon
           </Button>
           <Button
-            onClick={() => setPreferredTime("Night")}
+            onClick={() => handlePreferredTimeChange("Night")}
             className={cn(
               "flex-1 justify-center gap-2 h-14 text-base font-semibold",
               preferredTime === "Night"

@@ -8,15 +8,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 
-const data = [
-  { name: "Mon", completed: 8, missed: 2 },
-  { name: "Tue", completed: 7, missed: 3 },
-  { name: "Wed", completed: 9, missed: 1 },
-  { name: "Thu", completed: 10, missed: 0 },
-  { name: "Fri", completed: 8, missed: 2 },
-  { name: "Sat", completed: 5, missed: 1 },
-  { name: "Sun", completed: 6, missed: 0 },
-]
+const data: { name: string; completed: number; missed: number; }[] = [];
 
 const chartConfig = {
   completed: {

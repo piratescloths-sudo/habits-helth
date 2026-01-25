@@ -8,12 +8,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 
 export function MonthlyCalendar() {
-  const [month, setMonth] = React.useState(new Date("2023-10-05"));
+  const [month, setMonth] = React.useState(new Date());
 
-  // Mock data for dots to match screenshot
-  const successDays = [1, 2, 5, 6, 8, 9, 10, 12, 14, 15, 16];
-  const partialDays = [3, 7, 13];
-  const missedDays = [4, 11];
+  const successDays: number[] = [];
+  const partialDays: number[] = [];
+  const missedDays: number[] = [];
 
   const DayWithDot = ({ date, displayMonth }: { date: Date, displayMonth: Date }) => {
     if (!date) {
@@ -75,7 +74,7 @@ export function MonthlyCalendar() {
             IconLeft: () => <ChevronLeft className="h-5 w-5" />,
             IconRight: () => <ChevronRight className="h-5 w-5" />,
         }}
-        selected={new Date("2023-10-05")}
+        selected={new Date()}
        />
        <div className="mt-4 flex justify-center items-center gap-6 text-sm text-muted-foreground">
           <span className="flex items-center gap-2"><div className="h-2 w-2 rounded-full bg-primary" /> Success</span>

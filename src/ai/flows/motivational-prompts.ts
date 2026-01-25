@@ -30,12 +30,6 @@ const motivationalPromptFlow = ai.defineFlow({
   name: 'motivationalPromptFlow',
   outputSchema: MotivationalPromptOutputSchema,
 }, async () => {
-  // For consistency with the design, we'll return a hardcoded quote.
-  // In a real app, you would use the AI to generate this.
-  // const {output} = await prompt({});
-  // return output!;
-  return {
-    quote: "The secret of your future is hidden in your daily routine.",
-    author: "Mike Murdock",
-  }
+  const {output} = await prompt({});
+  return output!;
 });

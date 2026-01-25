@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Apple, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { GoogleIcon } from "../icons/google";
-import { useAuth, initiateEmailSignIn } from "@/firebase";
+import { useAuth, initiateEmailSignIn, initiateGoogleSignIn } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
@@ -55,6 +55,18 @@ export function LoginForm() {
       });
     }
   }
+
+  const handleGoogleSignIn = async () => {
+    try {
+      initiateGoogleSignIn(auth);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Sign-in Failed",
+        description: error.message || "An unexpected error occurred with Google Sign-in.",
+      });
+    }
+  };
 
   return (
     <>
@@ -124,7 +136,7 @@ export function LoginForm() {
         <Button variant="outline" className="h-12">
             <Apple className="mr-2" /> Apple
         </Button>
-        <Button variant="outline" className="h-12">
+        <Button variant="outline" className="h-12" onClick={handleGoogleSignIn}>
             <GoogleIcon className="mr-2" /> Google
         </Button>
       </div>

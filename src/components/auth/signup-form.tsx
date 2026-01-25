@@ -17,7 +17,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Apple, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { GoogleIcon } from "../icons/google";
-import { useAuth, initiateEmailSignUp } from "@/firebase";
+import { useAuth, initiateEmailSignUp, initiateGoogleSignIn } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
@@ -54,6 +54,18 @@ export function SignupForm() {
       });
     }
   }
+
+  const handleGoogleSignIn = async () => {
+    try {
+      initiateGoogleSignIn(auth);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Sign-up Failed",
+        description: error.message || "An unexpected error occurred with Google Sign-up.",
+      });
+    }
+  };
 
   return (
     <>
@@ -120,7 +132,7 @@ export function SignupForm() {
         <Button variant="outline" className="h-12">
             <Apple className="mr-2" /> Apple
         </Button>
-        <Button variant="outline" className="h-12">
+        <Button variant="outline" className="h-12" onClick={handleGoogleSignIn}>
             <GoogleIcon className="mr-2" /> Google
         </Button>
       </div>

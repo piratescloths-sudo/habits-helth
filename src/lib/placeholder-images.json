@@ -14,9 +14,9 @@
     },
     {
       "id": "auth-hero",
-      "description": "Hiker on a mountain peak, representing achieving goals.",
-      "imageUrl": "https://images.unsplash.com/photo-1585336332191-45199810885a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNDE5ODJ8MHwxfHNlYXJjaHwxfHxhbG9uZSUyMGhpa2VyJTIwb24lMjBtb3VudGFpbiUyMHBlYWt8ZW58MHx8fHwxNzE3MDM4Mzg4fDA&ixlib=rb-4.0.3&q=80&w=1080",
-      "imageHint": "mountain peak"
+      "description": "An illustration of a hiker looking at a mountain range, representing the journey to achieve goals.",
+      "imageUrl": "https://images.unsplash.com/photo-1620207834948-5c5452d79558?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNDE5ODJ8MHwxfHNlYXJjaHwxfHx2ZWN0b3IlMjBoaWtlciUyMG1vdW50YWlufGVufDB8fHx8MTcxNzUzOTU4N3ww&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "hiker illustration"
     },
     {
       "id": "checklist-hero",

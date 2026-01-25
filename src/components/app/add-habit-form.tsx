@@ -115,7 +115,7 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
 
       {step === 1 && (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleNextStep)} className="flex-1 flex flex-col">
+          <form onSubmit={form.handleSubmit(handleNextStep)} className="flex-1 flex flex-col overflow-hidden">
             <ScrollArea className="flex-1">
               <div className="p-4 space-y-4">
                 <FormField
@@ -127,7 +127,7 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
                       <FormControl>
                         <Input
                           placeholder="e.g. Morning Meditation"
-                          className="h-14 text-base bg-card border-primary/50 focus:border-primary ring-offset-background focus-visible:ring-primary"
+                          className="h-12 text-base bg-card border-primary/50 focus:border-primary ring-offset-background focus-visible:ring-primary"
                           {...field}
                         />
                       </FormControl>
@@ -154,7 +154,7 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
                                   <RadioGroupItem value={cat.name} className="sr-only" />
                                 </FormControl>
                                 <FormLabel className={cn(
-                                  "h-20 flex flex-col items-center justify-center gap-2 text-base border-2 rounded-lg cursor-pointer",
+                                  "h-16 flex flex-col items-center justify-center gap-2 text-base border-2 rounded-lg cursor-pointer",
                                   "transition-colors",
                                   field.value === cat.name
                                     ? "border-primary bg-primary/10 text-primary"
@@ -190,7 +190,7 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
                                     <RadioGroupItem value={freq} className="sr-only" />
                                 </FormControl>
                                 <FormLabel className={cn(
-                                    "flex-1 w-full justify-center rounded-md h-11 inline-flex items-center cursor-pointer",
+                                    "flex-1 w-full justify-center rounded-md h-10 inline-flex items-center cursor-pointer",
                                     "text-muted-foreground hover:bg-muted/50",
                                     field.value === freq && "bg-primary text-primary-foreground hover:bg-primary/90"
                                 )}>
@@ -211,10 +211,10 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
                 </div>
               </div>
             </ScrollArea>
-            <footer className="p-6 border-t border-border flex-shrink-0">
+            <footer className="p-4 border-t border-border flex-shrink-0">
               <Button
                 type="submit"
-                className="w-full h-14 text-lg font-bold"
+                className="w-full h-12 text-lg font-bold"
               >
                 Next Step <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -224,7 +224,7 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
       )}
 
       {step === 2 && (
-         <div className="flex-1 flex flex-col">
+         <div className="flex-1 flex flex-col overflow-hidden">
             <ScrollArea className="flex-1">
               <div className="p-4 space-y-4">
                 <div>
@@ -237,13 +237,13 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
                     <div className="bg-card p-4 rounded-lg flex items-center justify-center gap-2">
                         <div className="text-center">
                             <span className="text-muted-foreground text-sm">06</span>
-                            <div className="bg-primary/20 text-primary font-bold text-2xl rounded-lg p-3 w-16 text-center">07</div>
+                            <div className="bg-primary/20 text-primary font-bold text-2xl rounded-lg p-2 w-14 text-center">07</div>
                             <span className="text-muted-foreground text-sm">08</span>
                         </div>
                         <span className="text-primary font-bold text-2xl">:</span>
                         <div className="text-center">
                             <span className="text-muted-foreground text-sm">15</span>
-                            <div className="bg-primary/20 text-primary font-bold text-2xl rounded-lg p-3 w-16 text-center">30</div>
+                            <div className="bg-primary/20 text-primary font-bold text-2xl rounded-lg p-2 w-14 text-center">30</div>
                              <span className="text-muted-foreground text-sm">45</span>
                         </div>
                         <div className="flex flex-col gap-2 ml-2">
@@ -268,7 +268,7 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
                                         <RadioGroupItem value={p} className="sr-only" />
                                     </FormControl>
                                     <FormLabel className={cn(
-                                        "h-20 flex flex-col items-center justify-center gap-2 text-base border-2 rounded-lg cursor-pointer",
+                                        "h-16 flex flex-col items-center justify-center gap-2 text-base border-2 rounded-lg cursor-pointer",
                                         "transition-colors",
                                         priority === p
                                         ? "border-primary bg-primary/10 text-primary"
@@ -299,10 +299,10 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
                 </div>
               </div>
             </ScrollArea>
-            <footer className="p-6 border-t border-border flex-shrink-0">
+            <footer className="p-4 border-t border-border flex-shrink-0">
               <Button
                 onClick={handleCreateHabit}
-                className="w-full h-14 text-lg font-bold"
+                className="w-full h-12 text-lg font-bold"
               >
                 <Check className="mr-2 h-5 w-5" /> Create Habit
               </Button>

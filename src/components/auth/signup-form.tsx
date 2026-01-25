@@ -43,7 +43,7 @@ export function SignupForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      initiateEmailSignUp(auth, values.email, values.password);
+      await initiateEmailSignUp(auth, values.email, values.password);
       // The onAuthStateChanged listener in FirebaseProvider will create the user profile
       // and handle redirection via the protected route layout.
     } catch (error: any) {
@@ -57,7 +57,7 @@ export function SignupForm() {
 
   const handleGoogleSignIn = async () => {
     try {
-      initiateGoogleSignIn(auth);
+      await initiateGoogleSignIn(auth);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -128,10 +128,7 @@ export function SignupForm() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <Button variant="outline" className="h-12">
-            <Apple className="mr-2" /> Apple
-        </Button>
+      <div className="grid grid-cols-1 gap-4">
         <Button variant="outline" className="h-12" onClick={handleGoogleSignIn}>
             <GoogleIcon className="mr-2" /> Google
         </Button>

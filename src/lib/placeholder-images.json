@@ -11,6 +11,12 @@
       "description": "User profile picture",
       "imageUrl": "https://images.unsplash.com/photo-1702478553542-3aa3c0148543?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwcm9maWxlJTIwYXZhdGFyfGVufDB8fHx8MTc2OTI2NTQ5OHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "profile avatar"
+    },
+    {
+      "id": "auth-hero",
+      "description": "Hiker on a mountain peak, representing achieving goals.",
+      "imageUrl": "https://images.unsplash.com/photo-1585336332191-45199810885a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNDE5ODJ8MHwxfHNlYXJjaHwxfHxhbG9uZSUyMGhpa2VyJTIwb24lMjBtb3VudGFpbiUyMHBlYWt8ZW58MHx8fHwxNzE3MDM4Mzg4fDA&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "mountain peak"
     }
   ]
 }

@@ -1,18 +1,32 @@
 import Link from "next/link";
-import { Target } from "lucide-react";
 import { LoginForm } from "@/components/auth/login-form";
+import Image from "next/image";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 export default function LoginPage() {
+  const authHeroImage = PlaceHolderImages.find((p) => p.id === "auth-hero");
+
   return (
-    <div className="flex min-h-dvh w-full flex-col items-center bg-muted/40">
-      <div className="flex w-full max-w-md flex-1 flex-col bg-background">
-        <header className="flex justify-center p-4 py-8">
-          <Link href="/" className="flex items-center gap-2 text-primary">
-            <Target className="h-6 w-6" />
-            <h1 className="font-headline text-2xl font-bold">Habitualize</h1>
-          </Link>
+    <div className="flex min-h-dvh w-full flex-col items-center bg-background">
+      <div className="flex w-full max-w-md flex-1 flex-col">
+        <header className="relative flex h-20 items-center justify-center p-4">
+            <h1 className="font-headline text-xl font-semibold">
+                Welcome Back
+            </h1>
         </header>
         <main className="flex flex-1 flex-col justify-center p-6 pt-0">
+          <div className="relative mb-6 aspect-[4/3] w-full overflow-hidden rounded-lg">
+            {authHeroImage && (
+              <Image
+                src={authHeroImage.imageUrl}
+                alt={authHeroImage.description}
+                data-ai-hint={authHeroImage.imageHint}
+                fill
+                className="object-cover"
+                priority
+              />
+            )}
+          </div>
           <LoginForm />
         </main>
       </div>

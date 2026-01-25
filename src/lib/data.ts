@@ -1,6 +1,8 @@
 export type Habit = {
   id: string;
   name: string;
+  icon: string; // lucide-react icon name
+  details: string;
   category: "Health" | "Study" | "Work" | "Personal";
   frequency: "Daily" | "Weekly" | "Custom";
   customDays?: number[]; // 0 for Sunday, 1 for Monday, etc.
@@ -12,7 +14,9 @@ export type Habit = {
 export const habits: Habit[] = [
   {
     id: "1",
-    name: "Drink 8 glasses of water",
+    name: "Drink 2L Water",
+    icon: "Droplet",
+    details: "Done at 08:32 AM",
     category: "Health",
     frequency: "Daily",
     priority: "High",
@@ -21,8 +25,10 @@ export const habits: Habit[] = [
   },
   {
     id: "2",
-    name: "Exercise for 30 minutes",
-    category: "Health",
+    name: "Meditation",
+    icon: "BrainCircuit",
+    details: "Daily • 15 Minutes",
+    category: "Personal",
     frequency: "Daily",
     priority: "Medium",
     streak: 5,
@@ -30,7 +36,9 @@ export const habits: Habit[] = [
   },
   {
     id: "3",
-    name: "Read 10 pages of a book",
+    name: "Read 10 Pages",
+    icon: "Book",
+    details: "Evening • Goal: 300 pgs",
     category: "Study",
     frequency: "Daily",
     priority: "Medium",
@@ -39,30 +47,14 @@ export const habits: Habit[] = [
   },
   {
     id: "4",
-    name: "Weekly project review",
-    category: "Work",
+    name: "Gym Session",
+    icon: "Dumbbell",
+    details: "3x Weekly • 05:00 PM",
+    category: "Health",
     frequency: "Weekly",
     priority: "High",
     streak: 8,
-    status: "skipped",
-  },
-  {
-    id: "5",
-    name: "Meditate for 10 minutes",
-    category: "Personal",
-    frequency: "Daily",
-    priority: "Low",
-    streak: 2,
-    status: "completed",
-  },
-  {
-    id: "6",
-    name: "Learn a new German word",
-    category: "Study",
-    frequency: "Daily",
-    priority: "Low",
-    streak: 130,
-    status: "missed",
+    status: "pending",
   },
 ];
 

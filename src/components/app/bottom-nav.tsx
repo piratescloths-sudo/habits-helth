@@ -2,22 +2,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, ListChecks, LineChart, Settings } from "lucide-react";
+import { Home, BarChart2, Compass, User, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/dashboard", label: "Today", icon: Home },
-  { href: "/habits", label: "Habits", icon: ListChecks },
-  { href: "/progress", label: "Progress", icon: LineChart },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/progress", label: "Stats", icon: BarChart2 },
+  { href: "/habits", label: "Explore", icon: Compass },
+  { href: "/profile", label: "Profile", icon: User },
 ];
 
 export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 z-50 h-16 w-full border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:hidden">
-      <div className="mx-auto h-full max-w-md">
+    <div className="fixed bottom-0 z-50 w-full md:hidden">
+      <div className="relative mx-auto h-16 max-w-md border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="grid h-full grid-cols-4">
           {navItems.map((item) => {
             const isActive = pathname.startsWith(item.href);
@@ -31,7 +31,7 @@ export function BottomNav() {
                 )}
               >
                 <item.icon className="h-6 w-6" />
-                <span className={cn("text-xs font-medium", isActive && "font-bold")}>
+                <span className={cn("text-xs", isActive && "font-bold")}>
                   {item.label}
                 </span>
               </Link>
@@ -39,6 +39,12 @@ export function BottomNav() {
           })}
         </div>
       </div>
-    </nav>
+      <Link href="/habits" className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary shadow-lg ring-4 ring-background">
+          <Plus className="h-8 w-8 text-primary-foreground" />
+        </div>
+        <span className="sr-only">Add Habit</span>
+      </Link>
+    </div>
   );
 }

@@ -3,15 +3,8 @@
 import type { Habit } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Flame, MoreVertical, SkipForward, XCircle } from "lucide-react";
+import * as icons from "lucide-react";
+import { Check, Circle } from "lucide-react";
 
 export function HabitItem({
   habit,
@@ -20,71 +13,40 @@ export function HabitItem({
   habit: Habit;
   onStatusChange: (id: string, status: Habit["status"]) => void;
 }) {
-  const handleCheck = (checked: boolean) => {
-    onStatusChange(habit.id, checked ? "completed" : "pending");
+
+  const Icon = icons[habit.icon as keyof typeof icons] as React.ElementType || icons['Activity'];
+
+  const handleCheck = () => {
+    onStatusChange(habit.id, habit.status === "completed" ? "pending" : "completed");
   };
 
-  const statusConfig = {
-    completed: {
-      bg: "bg-success/10 border-success/20",
-      text: "text-success-foreground",
-    },
-    missed: {
-      bg: "bg-destructive/10 border-destructive/20",
-      text: "text-destructive-foreground",
-    },
-    skipped: {
-      bg: "bg-warning/10 border-warning/20",
-      text: "text-warning-foreground",
-    },
-    pending: {
-      bg: "bg-muted/50 border-transparent",
-      text: "",
-    },
-  };
+  const isCompleted = habit.status === "completed";
 
   return (
     <div
       className={cn(
-        "flex items-center gap-4 rounded-lg border p-3 transition-colors",
-        statusConfig[habit.status].bg
+        "flex items-center gap-4 rounded-xl p-4 transition-colors",
+        isCompleted ? "bg-primary/20 border-primary/30" : "bg-card"
       )}
     >
-      <Checkbox
-        id={`habit-${habit.id}`}
-        checked={habit.status === "completed"}
-        onCheckedChange={handleCheck}
-        className="h-6 w-6 rounded-full data-[state=checked]:bg-success data-[state=checked]:border-success-foreground border-2"
-      />
-      <div className="flex-1">
-        <label htmlFor={`habit-${habit.id}`} className="font-medium">
-          {habit.name}
-        </label>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Flame className="h-4 w-4 text-orange-500" />
-          <span>{habit.streak} days</span>
+        <div className={cn("w-12 h-12 rounded-lg flex items-center justify-center", isCompleted ? "bg-primary/30" : "bg-primary/10")}>
+            <Icon className={cn("w-6 h-6", isCompleted ? "text-primary-foreground" : "text-primary")} />
         </div>
+      
+      <div className="flex-1">
+        <p className="font-bold text-card-foreground">{habit.name}</p>
+        <p className="text-sm text-muted-foreground">{habit.details}</p>
       </div>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0">
-            <MoreVertical className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => onStatusChange(habit.id, "skipped")}>
-            <SkipForward className="mr-2 h-4 w-4" />
-            Mark Skipped
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onStatusChange(habit.id, "missed")}>
-            <XCircle className="mr-2 h-4 w-4" />
-            Mark Missed
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Edit Habit</DropdownMenuItem>
-          <DropdownMenuItem className="text-destructive focus:text-destructive">Delete Habit</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      
+      <Button variant="ghost" size="icon" onClick={handleCheck} className="w-10 h-10 rounded-full">
+        {isCompleted ? (
+          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+            <Check className="w-5 h-5 text-primary-foreground" />
+          </div>
+        ) : (
+          <Circle className="w-7 h-7 text-border" />
+        )}
+      </Button>
     </div>
   );
 }

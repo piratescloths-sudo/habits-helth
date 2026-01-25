@@ -6,6 +6,8 @@ import { habits as initialHabits } from "@/lib/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HabitItem } from "./habit-item";
 import { AnimatePresence, motion } from "framer-motion";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 export function TodaysHabits() {
   const [habits, setHabits] = useState(initialHabits);
@@ -17,11 +19,16 @@ export function TodaysHabits() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="font-headline">Today's Habits</CardTitle>
+    <Card className="bg-transparent border-0 shadow-none">
+      <CardHeader className="px-0">
+        <div className="flex justify-between items-center">
+            <CardTitle className="font-headline text-xl">Today's Habits</CardTitle>
+            <Link href="/habits">
+              <Button variant="link" className="text-primary">Edit</Button>
+            </Link>
+        </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0">
         <div className="space-y-3">
           <AnimatePresence>
             {habits.map((habit) => (

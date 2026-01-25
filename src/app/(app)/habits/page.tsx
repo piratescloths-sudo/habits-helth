@@ -21,7 +21,7 @@ export default function HabitsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  const addHabit = (newHabitData: Omit<Habit, "id" | "streak" | "status" | "icon" | "details" | "priority" | "customDays" >) => {
+  const addHabit = (newHabitData: Omit<Habit, "id" | "streak" | "status" | "icon" | "details" | "customDays" >) => {
     
     const categoryIcons: { [key in Habit['category']]: string } = {
       Health: "Heart",
@@ -36,8 +36,7 @@ export default function HabitsPage() {
       streak: 0,
       status: "pending",
       icon: categoryIcons[newHabitData.category] || 'Activity',
-      details: `${newHabitData.frequency} • Medium Priority`, // Mock details
-      priority: 'Medium', // Mock priority
+      details: `${newHabitData.frequency} • ${newHabitData.priority} Priority`,
     };
 
     setHabits((prev) => [newHabit, ...prev]);

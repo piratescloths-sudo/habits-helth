@@ -21,22 +21,13 @@ export default function HabitsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  const addHabit = (newHabitData: Omit<Habit, "id" | "streak" | "status" | "icon" | "details" | "customDays" >) => {
+  const addHabit = (newHabitData: Omit<Habit, "id" | "status" | "icon" >) => {
     
-    const categoryIcons: { [key in Habit['category']]: string } = {
-      Health: "Heart",
-      Study: "Book",
-      Work: "Briefcase",
-      Personal: "User",
-    };
-
     const newHabit: Habit = {
       ...newHabitData,
       id: `habit-${Date.now()}`,
-      streak: 0,
       status: "pending",
-      icon: categoryIcons[newHabitData.category] || 'Activity',
-      details: `${newHabitData.frequency} • ${newHabitData.priority} Priority`,
+      icon: 'Activity' // default icon
     };
 
     setHabits((prev) => [newHabit, ...prev]);
@@ -44,16 +35,6 @@ export default function HabitsPage() {
     toast({
       title: "Habit Added",
       description: `"${newHabit.name}" has been added to your list.`,
-    });
-  };
-
-  const updateHabit = (updatedHabit: Habit) => {
-    setHabits((prev) =>
-      prev.map((h) => (h.id === updatedHabit.id ? updatedHabit : h))
-    );
-    toast({
-      title: "Habit Updated",
-      description: `"${updatedHabit.name}" has been updated.`,
     });
   };
 
@@ -70,7 +51,7 @@ export default function HabitsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold font-headline">All Habits</h1>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
@@ -80,23 +61,21 @@ export default function HabitsPage() {
               New Habit
             </Button>
           </DialogTrigger>
-          <DialogContent className="h-full w-full max-h-dvh max-w-full p-0 sm:max-w-sm sm:h-[70vh] rounded-none sm:rounded-lg">
-            <DialogHeader className="sr-only">
+          <DialogContent>
+            <DialogHeader>
               <DialogTitle>New Habit</DialogTitle>
               <DialogDescription>
-                Use this form to add a new habit to your tracking list.
+                Add a new habit to your checklist.
               </DialogDescription>
             </DialogHeader>
             <AddHabitForm 
-                onFormSubmit={addHabit} 
-                onClose={() => setIsAddDialogOpen(false)} 
+                onFormSubmit={addHabit}
             />
           </DialogContent>
         </Dialog>
       </div>
       <AllHabits
         habits={habits}
-        onUpdate={updateHabit}
         onDelete={deleteHabit}
       />
     </div>

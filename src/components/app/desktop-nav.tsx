@@ -1,15 +1,14 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  Home,
-  BarChart2,
+  CheckSquare,
   Compass,
+  BarChartHorizontal,
+  UserCircle,
   Settings,
   Target,
   LogOut,
-  Trophy,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -19,10 +18,10 @@ import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { useToast } from "@/hooks/use-toast";
 
 const navItems = [
-  { href: "/dashboard", label: "Home", icon: Home },
-  { href: "/progress", label: "Stats", icon: BarChart2 },
-  { href: "/habits", label: "Habits", icon: Compass },
-  { href: "/awards", label: "Awards", icon: Trophy },
+    { href: "/dashboard", label: "Today", icon: CheckSquare },
+    { href: "/habits", label: "Explore", icon: Compass },
+    { href: "/progress", label: "Charts", icon: BarChartHorizontal },
+    { href: "/profile", label: "Profile", icon: UserCircle },
 ];
 
 export function DesktopNav() {
@@ -40,7 +39,7 @@ export function DesktopNav() {
   };
 
   return (
-    <aside className="hidden md:flex w-72 flex-col justify-between border-r bg-card p-6">
+    <aside className="flex w-full flex-col justify-between bg-card p-6 h-full">
       <div>
         <div className="flex items-center gap-3">
           <Target className="h-8 w-8 text-primary" />

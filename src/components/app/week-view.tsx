@@ -18,13 +18,13 @@ export function WeekView() {
   useEffect(() => {
     setIsClient(true);
     const today = new Date();
-    const weekStart = startOfWeek(today, { weekStartsOn: 0 }); // Sunday start
+    const weekStart = startOfWeek(today, { weekStartsOn: 1 }); // Monday start
     const weekDays: Day[] = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 7; i++) {
       const day = addDays(weekStart, i);
       weekDays.push({
-        short: format(day, 'EEE').toUpperCase(),
-        date: format(day, 'dd'),
+        short: format(day, 'E'),
+        date: format(day, 'd'),
         current: isToday(day),
       });
     }
@@ -33,11 +33,11 @@ export function WeekView() {
 
   if (!isClient) {
     return (
-        <div className="flex justify-between items-center py-2">
-            {Array.from({ length: 5 }).map((_, index) => (
+        <div className="flex justify-between items-center px-4 py-2">
+            {Array.from({ length: 7 }).map((_, index) => (
                 <div key={index} className="flex-1 text-center space-y-2">
-                    <Skeleton className="h-4 w-8 mx-auto" />
-                    <Skeleton className="h-7 w-6 mx-auto" />
+                    <Skeleton className="h-8 w-8 mx-auto rounded-full" />
+                    <Skeleton className="h-4 w-6 mx-auto" />
                 </div>
             ))}
         </div>
@@ -45,18 +45,24 @@ export function WeekView() {
   }
 
   return (
-    <div className="flex justify-between items-center py-2">
+    <div className="flex justify-between items-center px-4 py-2">
       {days.map((day) => (
         <div
           key={day.short}
-          className={cn(
-            "flex-1 text-center space-y-2 relative pt-1 pb-2",
-             day.current ? "text-primary" : "text-muted-foreground"
-          )}
+          className="flex-1 text-center space-y-2"
         >
-          <p className="text-sm font-medium">{day.short}</p>
-          <p className="text-2xl font-bold">{day.date}</p>
-          {day.current && <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 w-8 bg-primary rounded-full" />}
+          <div className={cn(
+            "w-9 h-9 mx-auto rounded-full flex items-center justify-center font-bold",
+            day.current ? "bg-primary text-primary-foreground" : "text-foreground"
+          )}>
+            {day.date}
+          </div>
+          <p className={cn(
+              "text-xs font-semibold",
+              day.current ? "text-primary" : "text-muted-foreground"
+          )}>
+              {day.short}
+          </p>
         </div>
       ))}
     </div>

@@ -2,10 +2,9 @@
 
 import type { Habit } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import * as icons from "lucide-react";
-import { Check, X, Pause, MoreVertical } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Check } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export function HabitItem({
   habit,
@@ -15,67 +14,34 @@ export function HabitItem({
   onStatusChange: (id: string, status: Habit["status"]) => void;
 }) {
   const Icon = (icons as any)[habit.icon] || icons.Activity;
+  const isCompleted = habit.status === "completed";
 
-  const handleStatusChange = (newStatus: Habit["status"]) => {
-    onStatusChange(habit.id, newStatus);
+  const handleCheckedChange = (checked: boolean) => {
+    onStatusChange(habit.id, checked ? "completed" : "pending");
   };
 
-  const isCompleted = habit.status === "completed";
-  const isSkipped = habit.status === "skipped";
-  const isMissed = habit.status === "missed";
-
   return (
-    <Card
+    <div
       className={cn(
-        "transition-all",
-        isCompleted && "bg-primary/10 border-primary/20",
-        (isSkipped || isMissed) && "bg-muted/50"
+        "flex items-center gap-4 rounded-xl p-4 transition-colors",
+        isCompleted ? "bg-primary/10" : "bg-card"
       )}
     >
-      <CardContent className="p-4">
-        <div className="flex items-center">
-          <div
-            className={cn(
-              "mr-4 flex h-12 w-12 items-center justify-center rounded-lg",
-              isCompleted ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
-            )}
-          >
-            <Icon className="h-6 w-6" />
-          </div>
-          <div className="flex-1">
-            <p className="font-semibold">{habit.name}</p>
-            <p className="text-sm text-muted-foreground">{habit.details}</p>
-          </div>
-          <Button variant="ghost" size="icon">
-            <MoreVertical className="h-5 w-5" />
-          </Button>
-        </div>
-        {!isCompleted && (
-          <div className="mt-4 grid grid-cols-3 gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleStatusChange("completed")}
-            >
-              <Check className="mr-2" /> Mark Done
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleStatusChange("skipped")}
-            >
-              <Pause className="mr-2" /> Skip
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleStatusChange("missed")}
-            >
-              <X className="mr-2" /> Miss
-            </Button>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      <div className={cn("flex h-12 w-12 items-center justify-center rounded-lg", isCompleted ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary")}>
+        <Icon className="h-6 w-6" />
+      </div>
+      <div className="flex-1">
+        <p className={cn("font-semibold", isCompleted && "line-through text-muted-foreground")}>{habit.name}</p>
+        <p className="text-sm text-muted-foreground">{habit.time}</p>
+      </div>
+      <Checkbox
+        id={`habit-${habit.id}`}
+        checked={isCompleted}
+        onCheckedChange={handleCheckedChange}
+        className="h-8 w-8 rounded-full data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+      >
+         <Check className="h-5 w-5" />
+      </Checkbox>
+    </div>
   );
 }

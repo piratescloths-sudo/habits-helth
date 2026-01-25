@@ -4,31 +4,38 @@ import * as React from "react";
 import { Calendar } from "@/components/ui/calendar";
 
 export function ProgressCalendar() {
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const [date, setDate] = React.useState<Date | undefined>(undefined);
+  const [month, setMonth] = React.useState<Date | undefined>(undefined);
+
+  React.useEffect(() => {
+    const today = new Date();
+    setDate(today);
+    setMonth(today);
+  }, []);
 
   const completedDays = [2, 15, 25];
   const missedDays = [5, 18];
   const skippedDays = [10, 22];
-
-  const today = new Date();
 
   return (
     <Calendar
       mode="single"
       selected={date}
       onSelect={setDate}
+      month={month}
+      onMonthChange={setMonth}
       className="rounded-md"
       modifiers={{
         completed: (day) => {
-          if (day.getMonth() !== today.getMonth()) return false;
+          if (!month || day.getMonth() !== month.getMonth()) return false;
           return completedDays.includes(day.getDate());
         },
         missed: (day) => {
-          if (day.getMonth() !== today.getMonth()) return false;
+          if (!month || day.getMonth() !== month.getMonth()) return false;
           return missedDays.includes(day.getDate());
         },
         skipped: (day) => {
-          if (day.getMonth() !== today.getMonth()) return false;
+          if (!month || day.getMonth() !== month.getMonth()) return false;
           return skippedDays.includes(day.getDate());
         },
       }}

@@ -207,13 +207,15 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
                 <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />
                 <p>You can adjust specific days in the next step.</p>
               </div>
+            </main>
+            <footer className="p-6 border-t border-border mt-auto">
               <Button
                 type="submit"
                 className="w-full h-14 text-lg font-bold"
               >
                 Next Step <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-            </main>
+            </footer>
           </form>
         </Form>
       )}

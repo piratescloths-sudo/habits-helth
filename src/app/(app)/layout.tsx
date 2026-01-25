@@ -5,9 +5,6 @@ import { AddHabitForm } from "@/components/app/add-habit-form";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
 } from "@/components/ui/dialog";
 import { HabitProvider, useHabits } from "@/components/app/habit-provider";
 import { Sidebar } from "@/components/app/sidebar";
@@ -25,13 +22,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
       </div>
       <BottomNav />
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>New Habit</DialogTitle>
-            <DialogDescription>
-              Add a new habit to your checklist.
-            </DialogDescription>
-          </DialogHeader>
+        <DialogContent className="p-0 bg-card border-none">
           <AddHabitForm onFormSubmit={addHabit} />
         </DialogContent>
       </Dialog>

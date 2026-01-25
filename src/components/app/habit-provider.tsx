@@ -3,10 +3,11 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { habits as initialHabits, Habit } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
+import type { AddHabitFormValues } from './add-habit-form';
 
 type HabitContextType = {
   habits: Habit[];
-  addHabit: (newHabitData: { name: string; description: string; }) => void;
+  addHabit: (newHabitData: AddHabitFormValues) => void;
   deleteHabit: (habitId: string) => void;
   handleStatusChange: (id: string) => void;
   isAddDialogOpen: boolean;
@@ -51,12 +52,30 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     );
   };
   
-  const addHabit = (newHabitData: { name: string; description: string; }) => {
+  const addHabit = (data: AddHabitFormValues) => {
+    const iconMap: { [key: string]: string } = {
+      Health: 'Heart',
+      Study: 'BookOpen',
+      Work: 'Briefcase',
+      Personal: 'User',
+    };
+
+    let description = data.frequency;
+    if (data.frequency === 'Weekly' && data.days && data.days.length > 0) {
+        description += ` on ${data.days.join(', ')}`;
+    } else if (data.frequency === 'Custom') {
+        description = 'Custom days';
+    }
+
+    if (data.reminder && data.time) {
+        description += ` at ${data.time.hour}:${data.time.minute} ${data.time.period}`;
+    }
+
     const newHabit: Habit = {
       id: `habit-${Date.now()}`,
-      name: newHabitData.name,
-      description: newHabitData.description,
-      icon: 'Activity', // default icon
+      name: data.name,
+      description: description,
+      icon: iconMap[data.category] || 'Activity',
       status: 'pending',
     };
 

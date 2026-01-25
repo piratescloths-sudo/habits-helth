@@ -2,12 +2,15 @@
 
 import * as React from "react";
 import { Calendar } from "@/components/ui/calendar";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function ProgressCalendar() {
   const [date, setDate] = React.useState<Date | undefined>(undefined);
   const [month, setMonth] = React.useState<Date | undefined>(undefined);
+  const [isClient, setIsClient] = React.useState(false);
 
   React.useEffect(() => {
+    setIsClient(true);
     const today = new Date();
     setDate(today);
     setMonth(today);
@@ -16,6 +19,10 @@ export function ProgressCalendar() {
   const completedDays = [2, 15, 25];
   const missedDays = [5, 18];
   const skippedDays = [10, 22];
+
+  if (!isClient) {
+    return <Skeleton className="h-[350px] w-full rounded-md" />;
+  }
 
   return (
     <Calendar

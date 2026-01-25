@@ -8,7 +8,7 @@ import * as icons from "lucide-react";
 
 type AllHabitsProps = {
   habits: Habit[];
-  onDelete: (habitId: string) => void;
+  onDelete?: (habitId: string) => void;
 };
 
 export function AllHabits({ habits, onDelete }: AllHabitsProps) {
@@ -36,10 +36,12 @@ export function AllHabits({ habits, onDelete }: AllHabitsProps) {
               <p className="font-medium">{habit.name}</p>
               <p className="text-sm text-muted-foreground">{habit.description}</p>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => onDelete(habit.id)} className="h-8 w-8 flex-shrink-0 text-destructive">
-                <Trash2 className="h-4 w-4" />
-                <span className="sr-only">Delete habit</span>
-            </Button>
+            {onDelete && (
+                <Button variant="ghost" size="icon" onClick={() => onDelete(habit.id)} className="h-8 w-8 flex-shrink-0 text-destructive">
+                    <Trash2 className="h-4 w-4" />
+                    <span className="sr-only">Delete habit</span>
+                </Button>
+            )}
           </div>
         )
       })}

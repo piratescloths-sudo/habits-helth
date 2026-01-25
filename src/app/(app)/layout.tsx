@@ -3,17 +3,13 @@
 import { AppHeader } from "@/components/app/app-header";
 import { BottomNav } from "@/components/app/bottom-nav";
 import { DesktopNav } from "@/components/app/desktop-nav";
-import { usePathname } from "next/navigation";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const isDashboard = pathname === '/dashboard';
-  
   return (
     <>
       {/* Mobile view */}
       <div className="relative flex min-h-dvh w-full flex-col bg-background md:hidden">
-        {!isDashboard && <AppHeader />}
+        <AppHeader />
         <main className="flex-1 px-4 py-6 pb-24">{children}</main>
         <BottomNav />
       </div>

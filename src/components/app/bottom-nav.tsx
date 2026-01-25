@@ -38,16 +38,6 @@ export function BottomNav() {
             );
           })}
         </div>
-         <div className="absolute bottom-4 left-0 w-full flex justify-around -z-10">
-            {navItems.map((item) => {
-                const isActive = pathname.startsWith(item.href);
-                return (
-                    <div key={item.href} className="w-1/4 flex justify-center">
-                        {isActive && <div className="h-4 w-12 bg-primary/50 rounded-full blur-lg"></div>}
-                    </div>
-                );
-            })}
-        </div>
       </div>
     </div>
   );

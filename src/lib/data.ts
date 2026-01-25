@@ -3,7 +3,7 @@ export type Habit = {
   name: string;
   icon: string; // lucide-react icon name
   details: string;
-  category: "HEALTH & WELLNESS" | "MINDFULNESS" | "FITNESS" | "GROWTH";
+  category: "Health" | "Study" | "Work" | "Personal";
   frequency: "Daily" | "Weekly" | "Custom";
   customDays?: number[]; // 0 for Sunday, 1 for Monday, etc.
   priority: "Low" | "Medium" | "High";
@@ -14,21 +14,21 @@ export type Habit = {
 export const habits: Habit[] = [
   {
     id: "1",
-    name: "Drink 2L Water",
+    name: "Drink 8 glasses of water",
     icon: "Droplet",
-    details: "HEALTH & WELLNESS",
-    category: "HEALTH & WELLNESS",
+    details: "Daily • High Priority",
+    category: "Health",
     frequency: "Daily",
     priority: "High",
     streak: 12,
-    status: "completed",
+    status: "pending",
   },
   {
     id: "2",
-    name: "10 Min Meditation",
-    icon: "BrainCircuit",
-    details: "MINDFULNESS",
-    category: "MINDFULNESS",
+    name: "Read for 30 minutes",
+    icon: "Book",
+    details: "Daily • Medium Priority",
+    category: "Study",
     frequency: "Daily",
     priority: "Medium",
     streak: 5,
@@ -36,10 +36,10 @@ export const habits: Habit[] = [
   },
   {
     id: "3",
-    name: "Evening Gym Session",
-    icon: "Dumbbell",
-    details: "FITNESS",
-    category: "FITNESS",
+    name: "Finish a work report",
+    icon: "Briefcase",
+    details: "Weekly • High Priority",
+    category: "Work",
     frequency: "Weekly",
     priority: "High",
     streak: 8,
@@ -47,14 +47,14 @@ export const habits: Habit[] = [
   },
   {
     id: "4",
-    name: "Read 10 Pages",
-    icon: "BookOpen",
-    details: "GROWTH",
-    category: "GROWTH",
+    name: "Meditate for 10 minutes",
+    icon: "User",
+    details: "Daily • Medium Priority",
+    category: "Personal",
     frequency: "Daily",
     priority: "Medium",
     streak: 23,
-    status: "completed",
+    status: "pending",
   },
 ];
 

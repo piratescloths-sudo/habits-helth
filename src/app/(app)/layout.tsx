@@ -5,6 +5,8 @@ import { AddHabitForm } from "@/components/app/add-habit-form";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { HabitProvider, useHabits } from "@/components/app/habit-provider";
 import { Sidebar } from "@/components/app/sidebar";
@@ -23,6 +25,8 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
       <BottomNav />
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogContent className="p-0 bg-card border-none">
+          <DialogTitle className="sr-only">Add New Habit</DialogTitle>
+          <DialogDescription className="sr-only">A form to create a new habit to track.</DialogDescription>
           <AddHabitForm onFormSubmit={addHabit} />
         </DialogContent>
       </Dialog>

@@ -116,7 +116,7 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
       {step === 1 && (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleNextStep)} className="flex-1 flex flex-col">
-            <main className="flex-1 overflow-hidden">
+            <main className="flex-1">
               <ScrollArea className="h-full">
                 <div className="p-6 space-y-8">
                   <FormField
@@ -227,7 +227,7 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
 
       {step === 2 && (
          <div className="flex-1 flex flex-col">
-            <main className="flex-1 overflow-hidden">
+            <main className="flex-1">
               <ScrollArea className="h-full">
                 <div className="p-6 space-y-8">
                   <div>

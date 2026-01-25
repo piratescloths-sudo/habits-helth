@@ -43,7 +43,7 @@ export function SignupForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     // On successful signup, redirect to dashboard
-    router.push("/app/dashboard");
+    router.push("/dashboard");
   }
 
   return (

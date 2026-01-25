@@ -6,10 +6,10 @@ import { Home, ListChecks, LineChart, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/app/dashboard", label: "Today", icon: Home },
-  { href: "/app/habits", label: "Habits", icon: ListChecks },
-  { href: "/app/progress", label: "Progress", icon: LineChart },
-  { href: "/app/settings", label: "Settings", icon: Settings },
+  { href: "/dashboard", label: "Today", icon: Home },
+  { href: "/habits", label: "Habits", icon: ListChecks },
+  { href: "/progress", label: "Progress", icon: LineChart },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function BottomNav() {

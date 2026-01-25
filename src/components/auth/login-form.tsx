@@ -39,7 +39,7 @@ export function LoginForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     // On successful login, redirect to dashboard
-    router.push("/app/dashboard");
+    router.push("/dashboard");
   }
 
   return (

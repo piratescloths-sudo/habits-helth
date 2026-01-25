@@ -6,6 +6,9 @@ import { PlusCircle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { AllHabits } from "@/components/app/all-habits";
@@ -79,6 +82,12 @@ export default function HabitsPage() {
             </Button>
           </DialogTrigger>
           <DialogContent className="h-full w-full max-h-dvh max-w-full p-0 sm:max-w-md sm:h-auto sm:max-h-[90dvh] rounded-none sm:rounded-lg overflow-hidden">
+            <DialogHeader className="sr-only">
+              <DialogTitle>New Habit</DialogTitle>
+              <DialogDescription>
+                Use this form to add a new habit to your tracking list.
+              </DialogDescription>
+            </DialogHeader>
             <AddHabitForm 
                 onFormSubmit={addHabit} 
                 onClose={() => setIsAddDialogOpen(false)} 

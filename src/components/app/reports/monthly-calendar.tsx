@@ -17,7 +17,7 @@ export function MonthlyCalendar() {
 
   const DayWithDot = ({ date, displayMonth }: { date: Date, displayMonth: Date }) => {
     if (!date) {
-      return <div />;
+      return <></>;
     }
     const day = date.getDate();
     const isCurrentMonth = date.getMonth() === displayMonth.getMonth();

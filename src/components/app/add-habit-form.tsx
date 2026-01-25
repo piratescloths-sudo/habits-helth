@@ -118,7 +118,7 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
           <form onSubmit={form.handleSubmit(handleNextStep)} className="flex-1 flex flex-col overflow-hidden">
             <main className="flex-1 overflow-y-auto">
               <ScrollArea className="h-full">
-                <div className="p-6 space-y-6">
+                <div className="p-4 space-y-4">
                   <FormField
                     control={form.control}
                     name="name"
@@ -229,7 +229,7 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
          <div className="flex-1 flex flex-col overflow-hidden">
             <main className="flex-1 overflow-y-auto">
               <ScrollArea className="h-full">
-                <div className="p-6 space-y-6">
+                <div className="p-4 space-y-4">
                   <div>
                       <h2 className="text-lg font-semibold mb-1">Set Reminders</h2>
                       <p className="text-muted-foreground text-sm">Consistency is key to building new habits.</p>

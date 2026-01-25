@@ -4,13 +4,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { AllHabits } from "@/components/app/all-habits";
 import { AddHabitForm } from "@/components/app/add-habit-form";
 import { habits as initialHabits, Habit } from "@/lib/data";
@@ -18,18 +15,30 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function HabitsPage() {
   const [habits, setHabits] = useState<Habit[]>(initialHabits);
-  const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  const addHabit = (newHabitData: Omit<Habit, "id" | "streak" | "status">) => {
+  const addHabit = (newHabitData: Omit<Habit, "id" | "streak" | "status" | "icon" | "details" | "priority" | "customDays" >) => {
+    
+    const categoryIcons: { [key in Habit['category']]: string } = {
+      Health: "Heart",
+      Study: "Book",
+      Work: "Briefcase",
+      Personal: "User",
+    };
+
     const newHabit: Habit = {
       ...newHabitData,
       id: `habit-${Date.now()}`,
       streak: 0,
       status: "pending",
+      icon: categoryIcons[newHabitData.category] || 'Activity',
+      details: `${newHabitData.frequency} • Medium Priority`, // Mock details
+      priority: 'Medium', // Mock priority
     };
+
     setHabits((prev) => [newHabit, ...prev]);
-    setIsAddSheetOpen(false);
+    setIsAddDialogOpen(false);
     toast({
       title: "Habit Added",
       description: `"${newHabit.name}" has been added to your list.`,
@@ -62,23 +71,20 @@ export default function HabitsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold font-headline">All Habits</h1>
-        <Sheet open={isAddSheetOpen} onOpenChange={setIsAddSheetOpen}>
-          <SheetTrigger asChild>
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+          <DialogTrigger asChild>
             <Button size="sm">
               <PlusCircle className="mr-2 h-4 w-4" />
               New Habit
             </Button>
-          </SheetTrigger>
-          <SheetContent>
-            <SheetHeader className="mb-6">
-              <SheetTitle>Create a New Habit</SheetTitle>
-              <SheetDescription>
-                Fill in the details below to add a new habit to your routine.
-              </SheetDescription>
-            </SheetHeader>
-            <AddHabitForm onFormSubmit={addHabit} />
-          </SheetContent>
-        </Sheet>
+          </DialogTrigger>
+          <DialogContent className="h-full w-full max-h-dvh max-w-full p-0 sm:max-w-md sm:h-auto sm:max-h-[90dvh] rounded-none sm:rounded-lg overflow-hidden">
+            <AddHabitForm 
+                onFormSubmit={addHabit} 
+                onClose={() => setIsAddDialogOpen(false)} 
+            />
+          </DialogContent>
+        </Dialog>
       </div>
       <AllHabits
         habits={habits}

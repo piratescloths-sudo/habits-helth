@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { userProfile } from "@/lib/data";
 import { Bell, Flag } from "lucide-react";
+import Link from "next/link";
 
 export function DashboardHeader() {
   const profileImage = PlaceHolderImages.find((p) => p.id === "profile");
@@ -27,9 +28,11 @@ export function DashboardHeader() {
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" className="bg-card rounded-full">
-          <Flag className="h-5 w-5" />
-        </Button>
+        <Link href="/reports">
+            <Button variant="ghost" size="icon" className="bg-card rounded-full">
+            <Flag className="h-5 w-5" />
+            </Button>
+        </Link>
         <Button variant="ghost" size="icon" className="bg-card rounded-full">
           <Bell className="h-5 w-5" />
         </Button>

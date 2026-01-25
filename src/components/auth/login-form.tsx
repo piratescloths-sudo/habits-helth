@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Apple, Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { GoogleIcon } from "../icons/google";
 import { useAuth, initiateEmailSignIn, initiateGoogleSignIn } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
@@ -29,6 +29,34 @@ const formSchema = z.object({
     message: "Password must be at least 6 characters.",
   }),
 });
+
+const getAuthErrorMessage = (errorCode: string) => {
+  switch (errorCode) {
+    case "auth/invalid-credential":
+    case "auth/user-not-found":
+    case "auth/wrong-password":
+      return "Invalid email or password. Please try again or sign up.";
+    case "auth/invalid-email":
+      return "Please enter a valid email address.";
+    case "auth/user-disabled":
+      return "This account has been disabled.";
+    default:
+      return "An unexpected error occurred during login. Please try again.";
+  }
+};
+
+const getGoogleSignInErrorMessage = (errorCode: string) => {
+  switch (errorCode) {
+    case "auth/account-exists-with-different-credential":
+      return "An account with this email already exists. Please sign in with the original method.";
+    case "auth/popup-closed-by-user":
+      return "The sign-in popup was closed. Please try again.";
+    case "auth/operation-not-allowed":
+      return "Google Sign-In is not enabled for this app.";
+    default:
+      return "An unexpected error occurred with Google Sign-in.";
+  }
+};
 
 export function LoginForm() {
   const router = useRouter();
@@ -51,7 +79,7 @@ export function LoginForm() {
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: error.message || "An unexpected error occurred.",
+        description: getAuthErrorMessage(error.code),
       });
     }
   }
@@ -63,7 +91,7 @@ export function LoginForm() {
       toast({
         variant: "destructive",
         title: "Sign-in Failed",
-        description: error.message || "An unexpected error occurred with Google Sign-in.",
+        description: getGoogleSignInErrorMessage(error.code),
       });
     }
   };

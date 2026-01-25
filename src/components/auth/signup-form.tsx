@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useState } from "react";
-import { Apple, Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { GoogleIcon } from "../icons/google";
 import { useAuth, initiateEmailSignUp, initiateGoogleSignIn } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
@@ -28,6 +28,32 @@ const formSchema = z.object({
     message: "Password must be at least 8 characters.",
   }),
 });
+
+const getAuthErrorMessage = (errorCode: string) => {
+  switch (errorCode) {
+    case 'auth/email-already-in-use':
+      return 'An account already exists with this email address. Please log in.';
+    case 'auth/invalid-email':
+      return 'Please enter a valid email address.';
+    case 'auth/weak-password':
+      return 'The password is too weak. It must be at least 6 characters.';
+    default:
+      return 'An unexpected error occurred during sign-up. Please try again.';
+  }
+};
+
+const getGoogleSignInErrorMessage = (errorCode: string) => {
+    switch (errorCode) {
+      case "auth/account-exists-with-different-credential":
+        return "An account with this email already exists. Please sign in with the original method.";
+      case "auth/popup-closed-by-user":
+        return "The sign-in popup was closed. Please try again.";
+      case "auth/operation-not-allowed":
+        return "Google Sign-In is not enabled for this app.";
+      default:
+        return "An unexpected error occurred with Google Sign-in.";
+    }
+  };
 
 export function SignupForm() {
   const auth = useAuth();
@@ -50,7 +76,7 @@ export function SignupForm() {
       toast({
         variant: "destructive",
         title: "Sign-up Failed",
-        description: error.message || "An unexpected error occurred.",
+        description: getAuthErrorMessage(error.code),
       });
     }
   }
@@ -62,7 +88,7 @@ export function SignupForm() {
       toast({
         variant: "destructive",
         title: "Sign-up Failed",
-        description: error.message || "An unexpected error occurred with Google Sign-up.",
+        description: getGoogleSignInErrorMessage(error.code),
       });
     }
   };

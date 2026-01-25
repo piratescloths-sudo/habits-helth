@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,8 +11,8 @@
     --card-foreground: 210 40% 98%;
     --popover: 140 80% 5%;
     --popover-foreground: 210 40% 98%;
-    --primary: 158 81% 34%;
-    --primary-foreground: 158 81% 94%;
+    --primary: 158 64% 52%;
+    --primary-foreground: 158 60% 10%;
     --secondary: 140 50% 20%;
     --secondary-foreground: 210 40% 98%;
     --muted: 140 50% 20%;
@@ -26,7 +27,7 @@
     --warning-foreground: 30 70% 95%;
     --border: 140 50% 25%;
     --input: 140 50% 20%;
-    --ring: 158 81% 34%;
+    --ring: 158 64% 52%;
     --radius: 0.8rem;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
@@ -42,8 +43,8 @@
     --card-foreground: 210 40% 98%;
     --popover: 140 80% 5%;
     --popover-foreground: 210 40% 98%;
-    --primary: 158 81% 34%;
-    --primary-foreground: 158 81% 94%;
+    --primary: 158 64% 52%;
+    --primary-foreground: 158 60% 10%;
     --secondary: 140 50% 20%;
     --secondary-foreground: 210 40% 98%;
     --muted: 140 50% 20%;
@@ -58,7 +59,7 @@
     --warning-foreground: 30 70% 95%;
     --border: 140 50% 25%;
     --input: 140 50% 20%;
-    --ring: 158 81% 34%;
+    --ring: 158 64% 52%;
   }
 }
 

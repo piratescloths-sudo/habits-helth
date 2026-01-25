@@ -80,7 +80,7 @@ export default function HabitsPage() {
               New Habit
             </Button>
           </DialogTrigger>
-          <DialogContent className="h-full w-full max-h-dvh max-w-full p-0 sm:max-w-md sm:h-auto sm:max-h-[90dvh] rounded-none sm:rounded-lg overflow-hidden">
+          <DialogContent className="h-full w-full max-h-dvh max-w-full p-0 sm:max-w-md sm:h-[90dvh] rounded-none sm:rounded-lg overflow-hidden">
             <DialogHeader className="sr-only">
               <DialogTitle>New Habit</DialogTitle>
               <DialogDescription>

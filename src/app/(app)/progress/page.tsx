@@ -13,6 +13,14 @@ export default function ProgressPage() {
       <h1 className="font-headline text-2xl font-bold">Your Progress</h1>
       <Card>
         <CardHeader>
+          <CardTitle className="font-headline">All Habits</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <AllHabits habits={habits} />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
           <CardTitle className="font-headline">Monthly View</CardTitle>
         </CardHeader>
         <CardContent>
@@ -25,14 +33,6 @@ export default function ProgressPage() {
         </CardHeader>
         <CardContent>
           <WeeklyChart />
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-headline">All Habits</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <AllHabits habits={habits} />
         </CardContent>
       </Card>
     </div>

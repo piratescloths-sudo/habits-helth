@@ -25,7 +25,17 @@ export default function SocialPage() {
       try {
         await navigator.share(shareData);
       } catch (error) {
+        // Don't show an error if the user cancels the share dialog
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          return;
+        }
+
         console.error('Error sharing:', error);
+        toast({
+          variant: 'destructive',
+          title: 'Sharing Failed',
+          description: 'Could not share the link at this time.',
+        });
       }
     } else {
       // Fallback for browsers that don't support the Web Share API

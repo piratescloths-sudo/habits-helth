@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { format, startOfWeek, addDays, isToday } from 'date-fns';
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,12 +13,14 @@ type Day = {
 
 export function WeekView() {
   const [days, setDays] = useState<Day[]>([]);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     const today = new Date();
-    const weekStart = startOfWeek(today, { weekStartsOn: 1 }); // Monday start
+    const weekStart = startOfWeek(today, { weekStartsOn: 0 }); // Sunday start
     const weekDays: Day[] = [];
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 5; i++) {
       const day = addDays(weekStart, i);
       weekDays.push({
         short: format(day, 'EEE').toUpperCase(),
@@ -30,38 +31,33 @@ export function WeekView() {
     setDays(weekDays);
   }, []);
 
-  if (days.length === 0) {
+  if (!isClient) {
     return (
-        <div className="flex justify-between items-center gap-2">
-            {Array.from({ length: 7 }).map((_, index) => (
-                <Card key={index} className="flex-1 text-center p-2 rounded-lg bg-card border-card">
-                    <CardContent className="p-1 space-y-1">
-                        <Skeleton className="h-4 w-8 mx-auto" />
-                        <Skeleton className="h-7 w-6 mx-auto" />
-                    </CardContent>
-                </Card>
+        <div className="flex justify-between items-center py-2">
+            {Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="flex-1 text-center space-y-2">
+                    <Skeleton className="h-4 w-8 mx-auto" />
+                    <Skeleton className="h-7 w-6 mx-auto" />
+                </div>
             ))}
         </div>
     );
   }
 
   return (
-    <div className="flex justify-between items-center gap-2">
+    <div className="flex justify-between items-center py-2">
       {days.map((day) => (
-        <Card
+        <div
           key={day.short}
           className={cn(
-            "flex-1 text-center p-2 rounded-lg transition-colors border-2",
-            day.current
-              ? "bg-primary border-primary"
-              : "bg-card border-card"
+            "flex-1 text-center space-y-2 relative pt-1 pb-2",
+             day.current ? "text-primary" : "text-muted-foreground"
           )}
         >
-          <CardContent className={cn("p-1", day.current && "text-primary-foreground")}>
-            <p className="text-xs font-medium">{day.short}</p>
-            <p className="text-xl font-bold">{day.date}</p>
-          </CardContent>
-        </Card>
+          <p className="text-sm font-medium">{day.short}</p>
+          <p className="text-2xl font-bold">{day.date}</p>
+          {day.current && <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 w-8 bg-primary rounded-full" />}
+        </div>
       ))}
     </div>
   );

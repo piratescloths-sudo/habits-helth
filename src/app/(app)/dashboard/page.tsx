@@ -1,53 +1,43 @@
-import { MotivationalPrompt } from "@/components/app/motivational-prompt";
 import { TodaysHabits } from "@/components/app/todays-habits";
-import { Suspense } from "react";
-import { CurrentProgress } from "@/components/app/current-progress";
 import { WeekView } from "@/components/app/week-view";
-import { Skeleton } from "@/components/ui/skeleton";
-import { ProgressCalendar } from "@/components/app/progress-calendar";
-import { WeeklyChart } from "@/components/app/weekly-chart";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { habits } from "@/lib/data";
+import { Calendar, Settings } from "lucide-react";
+import Link from "next/link";
 
 export default function DashboardPage() {
-  return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-      <div className="lg:col-span-2 space-y-6">
-        <CurrentProgress />
-        <WeekView />
-        <TodaysHabits />
-      </div>
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-headline text-lg">Monthly View</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ProgressCalendar />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-headline text-lg">Weekly Performance</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <WeeklyChart />
-          </CardContent>
-        </Card>
-        <Suspense fallback={<MotivationalPromptSkeleton />}>
-          <MotivationalPrompt />
-        </Suspense>
-      </div>
-    </div>
-  );
-}
+    const completedHabits = habits.filter(h => h.status === 'completed').length;
+    const totalHabits = habits.length;
 
-function MotivationalPromptSkeleton() {
-  return (
-    <div className="text-center py-8 px-4 space-y-4 rounded-lg bg-card">
-      <Skeleton className="h-1 w-1/4 mx-auto" />
-      <Skeleton className="h-5 w-3/4 mx-auto" />
-      <Skeleton className="h-5 w-full max-w-md mx-auto" />
-      <Skeleton className="h-4 w-1/3 mx-auto" />
-    </div>
-  );
+    return (
+        <div className="space-y-4">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <Calendar className="h-6 w-6 text-foreground" />
+                    <h1 className="font-headline text-2xl font-bold">Daily Checklist</h1>
+                </div>
+                <Link href="/settings">
+                    <Button variant="ghost" size="icon">
+                        <Settings className="h-6 w-6" />
+                    </Button>
+                </Link>
+            </div>
+
+            <WeekView />
+
+            {/* Today's Goals */}
+            <Card className="bg-transparent border-t border-b border-border/50 rounded-none -mx-4 px-4 py-3">
+                <div className="flex justify-between items-center font-semibold text-sm mb-2">
+                    <h2 className="text-foreground">Today's Goals</h2>
+                    <span className="text-primary">{completedHabits} of {totalHabits} completed</span>
+                </div>
+                <Progress value={(completedHabits / totalHabits) * 100} className="h-1.5" />
+            </Card>
+            
+            <TodaysHabits />
+        </div>
+    );
 }

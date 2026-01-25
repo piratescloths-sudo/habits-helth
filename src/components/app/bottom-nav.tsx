@@ -9,8 +9,8 @@ import { useHabits } from "./habit-provider";
 
 const navItems = [
   { href: "/dashboard", label: "Today", icon: Home },
-  { href: "/progress", label: "Stats", icon: BarChart2 },
-  { href: "/habits", label: "Explore", icon: Compass },
+  { href: "/progress", label: "Progress", icon: BarChart2 },
+  { href: "/habits", label: "Habits", icon: Compass },
   { href: "/profile", label: "Profile", icon: User },
 ];
 

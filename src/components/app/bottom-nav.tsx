@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, BarChart2, Compass, User, Plus } from "lucide-react";
+import { Home, BarChart2, Trophy, User, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/dashboard", label: "Today", icon: Home },
+  { href: "/dashboard", label: "Home", icon: Home },
   { href: "/progress", label: "Stats", icon: BarChart2 },
-  { href: "/habits", label: "Habits", icon: Compass },
+  { href: "/awards", label: "Awards", icon: Trophy },
   { href: "/profile", label: "Profile", icon: User },
 ];
 

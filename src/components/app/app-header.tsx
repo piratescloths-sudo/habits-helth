@@ -1,12 +1,38 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Bell } from "lucide-react";
+import { Bell, ArrowLeft, Settings } from "lucide-react";
 import { userProfile } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 export function AppHeader() {
+  const pathname = usePathname();
+  const router = useRouter();
   const profileImage = PlaceHolderImages.find((p) => p.id === "profile");
+
+  const isProfilePage = pathname === "/profile" || pathname === "/profile/edit";
+
+  if (isProfilePage) {
+    return (
+      <header className="sticky top-0 z-40 w-full bg-background">
+        <div className="flex h-20 items-center justify-between px-4">
+          <Button variant="ghost" size="icon" onClick={() => router.back()}>
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+          <h1 className="text-xl font-bold font-headline">Profile</h1>
+          <Link href="/settings">
+            <Button variant="ghost" size="icon">
+              <Settings className="h-6 w-6" />
+            </Button>
+          </Link>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header className="sticky top-0 z-40 w-full bg-background">
       <div className="flex h-20 items-center justify-between px-4">

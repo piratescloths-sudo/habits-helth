@@ -9,6 +9,7 @@ import {
   Settings,
   Target,
   LogOut,
+  Trophy,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -18,9 +19,10 @@ import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { useToast } from "@/hooks/use-toast";
 
 const navItems = [
-  { href: "/dashboard", label: "Today", icon: Home },
+  { href: "/dashboard", label: "Home", icon: Home },
   { href: "/progress", label: "Stats", icon: BarChart2 },
   { href: "/habits", label: "Habits", icon: Compass },
+  { href: "/awards", label: "Awards", icon: Trophy },
 ];
 
 export function DesktopNav() {

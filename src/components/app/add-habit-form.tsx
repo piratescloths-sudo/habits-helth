@@ -96,7 +96,7 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
 
   return (
     <div className="flex flex-col h-full bg-background">
-      <header className="flex items-center justify-between p-4 flex-shrink-0">
+      <header className="flex items-center justify-between p-4 flex-shrink-0 border-b">
         {step === 1 ? (
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-6 w-6" />
@@ -115,7 +115,7 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
 
       {step === 1 && (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleNextStep)} className="flex-1 flex flex-col overflow-hidden">
+          <form onSubmit={form.handleSubmit(handleNextStep)} className="flex-1 flex flex-col">
             <ScrollArea className="flex-1">
               <div className="p-4 space-y-4">
                 <FormField
@@ -211,7 +211,7 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
                 </div>
               </div>
             </ScrollArea>
-            <footer className="p-6 border-t border-border">
+            <footer className="p-6 border-t border-border flex-shrink-0">
               <Button
                 type="submit"
                 className="w-full h-14 text-lg font-bold"
@@ -224,7 +224,7 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
       )}
 
       {step === 2 && (
-         <div className="flex-1 flex flex-col overflow-hidden">
+         <div className="flex-1 flex flex-col">
             <ScrollArea className="flex-1">
               <div className="p-4 space-y-4">
                 <div>
@@ -299,7 +299,7 @@ export function AddHabitForm({ onFormSubmit, onClose }: AddHabitFormProps) {
                 </div>
               </div>
             </ScrollArea>
-            <footer className="p-6 border-t border-border">
+            <footer className="p-6 border-t border-border flex-shrink-0">
               <Button
                 onClick={handleCreateHabit}
                 className="w-full h-14 text-lg font-bold"

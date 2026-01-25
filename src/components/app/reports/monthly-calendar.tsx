@@ -16,6 +16,9 @@ export function MonthlyCalendar() {
   const missedDays = [4, 11];
 
   const DayWithDot = ({ date, displayMonth }: { date: Date, displayMonth: Date }) => {
+    if (!date) {
+      return <div />;
+    }
     const day = date.getDate();
     const isCurrentMonth = date.getMonth() === displayMonth.getMonth();
     const isSuccess = isCurrentMonth && successDays.includes(day);

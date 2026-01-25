@@ -1,0 +1,253 @@
+{
+  "entities": {
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents a user's profile information.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserProfile entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The user's full name."
+        },
+        "age": {
+          "type": "number",
+          "description": "The user's age.",
+          "format": "integer"
+        },
+        "goals": {
+          "type": "array",
+          "description": "The user's goals (fitness, study, mental health, productivity, etc.).",
+          "items": {
+            "type": "string"
+          }
+        },
+        "preferredHabitTime": {
+          "type": "string",
+          "description": "The user's preferred time for habits (morning, afternoon, night)."
+        },
+        "profilePhotoUrl": {
+          "type": "string",
+          "description": "URL of the user's profile photo.",
+          "format": "uri"
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address.",
+          "format": "email"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email"
+      ]
+    },
+    "Habit": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Habit",
+      "type": "object",
+      "description": "Represents a habit that a user wants to track.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Habit entity."
+        },
+        "userProfileId": {
+          "type": "string",
+          "description": "Reference to UserProfile. (Relationship: UserProfile 1:N Habit)"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the habit (e.g., Drink Water, Exercise)."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category of the habit (Health, Study, Work, Personal)."
+        },
+        "frequency": {
+          "type": "string",
+          "description": "The frequency of the habit (Daily, Weekly, Custom days)."
+        },
+        "startDate": {
+          "type": "string",
+          "description": "The start date of the habit.",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "description": "The end date of the habit (optional).",
+          "format": "date-time"
+        },
+        "reminderTime": {
+          "type": "string",
+          "description": "The time to send a reminder for the habit."
+        },
+        "priority": {
+          "type": "string",
+          "description": "The priority level of the habit (Low, Medium, High)."
+        }
+      },
+      "required": [
+        "id",
+        "userProfileId",
+        "name",
+        "category",
+        "frequency",
+        "startDate",
+        "priority"
+      ]
+    },
+    "HabitRecord": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "HabitRecord",
+      "type": "object",
+      "description": "Represents a daily record of a habit.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the HabitRecord entity."
+        },
+        "habitId": {
+          "type": "string",
+          "description": "Reference to Habit. (Relationship: Habit 1:N HabitRecord)"
+        },
+        "date": {
+          "type": "string",
+          "description": "The date of the habit record.",
+          "format": "date-time"
+        },
+        "status": {
+          "type": "string",
+          "description": "The status of the habit for that day (Completed, Missed, Skipped)."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional notes for the day."
+        }
+      },
+      "required": [
+        "id",
+        "habitId",
+        "date",
+        "status"
+      ]
+    },
+    "MotivationalQuote": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "MotivationalQuote",
+      "type": "object",
+      "description": "Represents a motivational quote.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the MotivationalQuote entity."
+        },
+        "text": {
+          "type": "string",
+          "description": "The text of the motivational quote."
+        },
+        "author": {
+          "type": "string",
+          "description": "The author of the motivational quote."
+        }
+      },
+      "required": [
+        "id",
+        "text",
+        "author"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores user profile information. Uses path-based ownership for private data. The userId parameter corresponds to the Firebase Auth UID.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user, matching the Firebase Auth UID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/habits/{habitId}",
+        "definition": {
+          "entityName": "Habit",
+          "schema": {
+            "$ref": "#/backend/entities/Habit"
+          },
+          "description": "Stores habits created by the user. Nested under the user document to establish clear ownership. Uses path-based ownership for private data.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user, matching the Firebase Auth UID."
+            },
+            {
+              "name": "habitId",
+              "description": "The unique identifier for the habit."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/habits/{habitId}/records/{recordId}",
+        "definition": {
+          "entityName": "HabitRecord",
+          "schema": {
+            "$ref": "#/backend/entities/HabitRecord"
+          },
+          "description": "Stores daily records for each habit. Nested under the habit document to establish clear ownership and enable efficient querying. Uses path-based ownership for private data.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user, matching the Firebase Auth UID."
+            },
+            {
+              "name": "habitId",
+              "description": "The unique identifier for the habit."
+            },
+            {
+              "name": "recordId",
+              "description": "The unique identifier for the habit record."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/motivational_quotes/{quoteId}",
+        "definition": {
+          "entityName": "MotivationalQuote",
+          "schema": {
+            "$ref": "#/backend/entities/MotivationalQuote"
+          },
+          "description": "Stores motivational quotes. Intended as a globally readable collection.",
+          "params": [
+            {
+              "name": "quoteId",
+              "description": "The unique identifier for the motivational quote."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to ensure security, scalability, and ease of debugging, following the principles of Authorization Independence, Clarity of Intent, DBAC (Database-Based Access Control), and QAPs (Rules are not Filters). Authorization Independence is achieved through denormalization. For example, the `Habits` collection is placed under each user's document (`/users/{userId}/habits/{habitId}`) to establish clear ownership without needing to read parent documents for authorization. Similarly, `HabitRecords` are nested under `Habits` for the same reason. This eliminates the need for `get()` calls in security rules, enabling atomic operations. Structural Segregation is applied by storing user profiles in a dedicated `users` collection and habits under user-specific subcollections, ensuring that all documents within a collection share the same security requirements.  Access Modeling prioritizes path-based ownership for private user data, with habits and their records nested under the user. The `motivational_quotes` collection is designed as a global read-only collection.  This structure supports QAPs because `list` operations are scoped to the user's data, preventing unauthorized access."
+  }
+}

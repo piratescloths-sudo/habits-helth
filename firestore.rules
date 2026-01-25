@@ -1,0 +1,144 @@
+rules_version = '2';
+
+/**
+ * @file firestore.rules
+ * @description Security rules for the Habit Tracker application.
+ *
+ * @section Core Philosophy
+ * This ruleset enforces a strict user-ownership model. All user-generated data,
+ * including profiles, habits, and habit records, is private and can only be
+ * accessed by the user who created it. There is a clear separation between
+ * private user data and public application data.
+ *
+ * @section Data Structure
+ * All private user data is hierarchically organized under the `/users/{userId}`
+ * path, where `{userId}` corresponds to the user's Firebase Authentication UID.
+ * This path-based ownership is the foundation of the security model. Public data,
+ * like motivational quotes, is stored in a separate top-level collection.
+ *
+ * @section Key Security Decisions
+ * - **Default Deny:** Access is denied unless explicitly granted.
+ * - **User Data Privacy:** Users can only read and write data within their own
+ *   document tree (i.e., `/users/{their_own_userId}/...`).
+ * - **No User Enumeration:** Listing the top-level `/users` collection is forbidden
+ *   to prevent exposing the user base.
+ * - **Public Read-Only Data:** The `/motivational_quotes` collection is readable
+ *   by anyone, including unauthenticated users, but is locked down against all
+ *   client-side writes. It is assumed this data is populated by an admin or
+ *   a trusted server process.
+ *
+ * @section Denormalization for Authorization
+ * The data structure inherently uses denormalization for security. By nesting all
+ * user content under `/users/{userId}`, ownership is determined directly from the
+ * document path. This avoids slow and costly `get()` calls in rules, making them
+ * faster and more secure.
+ *
+ * @section Structural Segregation
+ * Private user data (`/users`) is structurally segregated from public application
+ * data (`/motivational_quotes`). This ensures that queries for public data cannot
+ * accidentally leak private information and simplifies the rules for each collection.
+ */
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // -------------------------------------------------------------------------
+    // Helper Functions
+    // -------------------------------------------------------------------------
+
+    /**
+     * Checks if the user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the currently authenticated user is the owner of the resource.
+     * Compares the request's auth UID with the userId from the document path.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * A robust check for update/delete operations.
+     * Ensures the user is the owner AND the document already exists.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    // -------------------------------------------------------------------------
+    // User Data Collections
+    // -------------------------------------------------------------------------
+
+    /**
+     * @description Rules for a user's own profile document.
+     * @path /users/{userId}
+     * @allow (get) An authenticated user reads their own profile: `get /users/user_abc` (auth.uid: 'user_abc').
+     * @allow (create) A new user creates their profile for the first time: `create /users/user_abc` (auth.uid: 'user_abc').
+     * @deny (get) A user tries to read another user's profile: `get /users/user_xyz` (auth.uid: 'user_abc').
+     * @deny (update) A user tries to change the immutable `id` field in their profile.
+     * @principle Restricts access to a user's own data tree and enforces relational integrity.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false; // Disallow listing documents at this path. Also prevents listing subcollections that are not explicitly matched.
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+
+      /**
+       * @description Rules for a user's collection of habits.
+       * @path /users/{userId}/habits/{habitId}
+       * @allow (list) An authenticated user lists their own habits: `list /users/user_abc/habits` (auth.uid: 'user_abc').
+       * @allow (create) An authenticated user creates a new habit: `create /users/user_abc/habits/habit_123` (auth.uid: 'user_abc').
+       * @deny (list) A user tries to list another user's habits: `list /users/user_xyz/habits` (auth.uid: 'user_abc').
+       * @deny (create) A user creates a habit with a mismatched `userProfileId`: `create /users/user_abc/habits/habit_123` with `userProfileId: 'user_xyz'` in the data.
+       * @principle Enforces document ownership for all operations within a user's private subcollection.
+       */
+      match /habits/{habitId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userProfileId == userId;
+        allow update: if isExistingOwner(userId) && request.resource.data.userProfileId == resource.data.userProfileId;
+        allow delete: if isExistingOwner(userId);
+
+        /**
+         * @description Rules for a user's daily habit records.
+         * @path /users/{userId}/habits/{habitId}/records/{recordId}
+         * @allow (list) An authenticated user lists records for their own habit: `list /users/user_abc/habits/habit_123/records` (auth.uid: 'user_abc').
+         * @allow (create) An authenticated user creates a new record for their habit: `create /users/user_abc/habits/habit_123/records/record_456` (auth.uid: 'user_abc').
+         * @deny (get) A user tries to read a record for another user's habit: `get /users/user_xyz/habits/habit_789/records/record_111` (auth.uid: 'user_abc').
+         * @deny (update) A user tries to change the parent `habitId` of a record.
+         * @principle Deeply nested ownership rules ensure granular control over user-specific data.
+         */
+        match /records/{recordId} {
+          allow get, list: if isOwner(userId);
+          allow create: if isOwner(userId) && request.resource.data.habitId == habitId;
+          allow update: if isExistingOwner(userId) && request.resource.data.habitId == resource.data.habitId;
+          allow delete: if isExistingOwner(userId);
+        }
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Public Collections
+    // -------------------------------------------------------------------------
+
+    /**
+     * @description Rules for the collection of motivational quotes.
+     * @path /motivational_quotes/{quoteId}
+     * @allow (get) Any user, including unauthenticated ones, can read a quote: `get /motivational_quotes/quote_123`.
+     * @allow (list) Any user, including unauthenticated ones, can list all quotes: `list /motivational_quotes`.
+     * @deny (create) Any client tries to add a new quote: `create /motivational_quotes/new_quote`.
+     * @deny (delete) Any client tries to delete a quote: `delete /motivational_quotes/quote_123`.
+     * @principle Provides public read access to a global collection while completely restricting client-side writes.
+     */
+    match /motivational_quotes/{quoteId} {
+      allow get, list: if true;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}

@@ -23,7 +23,7 @@ export function WeekView() {
     for (let i = 0; i < 7; i++) {
       const day = addDays(weekStart, i);
       weekDays.push({
-        short: format(day, 'E'),
+        short: format(day, 'E').toUpperCase(),
         date: format(day, 'd'),
         current: isToday(day),
       });
@@ -33,11 +33,11 @@ export function WeekView() {
 
   if (!isClient) {
     return (
-        <div className="flex justify-between items-center px-4 py-2">
+        <div className="flex justify-between items-center py-2">
             {Array.from({ length: 7 }).map((_, index) => (
                 <div key={index} className="flex-1 text-center space-y-2">
-                    <Skeleton className="h-8 w-8 mx-auto rounded-full" />
-                    <Skeleton className="h-4 w-6 mx-auto" />
+                    <Skeleton className="h-6 w-8 mx-auto" />
+                    <Skeleton className="h-8 w-8 mx-auto rounded-lg" />
                 </div>
             ))}
         </div>
@@ -45,24 +45,25 @@ export function WeekView() {
   }
 
   return (
-    <div className="flex justify-between items-center px-4 py-2">
+    <div className="flex justify-around items-center">
       {days.map((day) => (
         <div
           key={day.short}
-          className="flex-1 text-center space-y-2"
+          className={cn("flex-1 text-center space-y-2 p-2 rounded-lg",
+            day.current && "border-2 border-primary"
+          )}
         >
-          <div className={cn(
-            "w-9 h-9 mx-auto rounded-full flex items-center justify-center font-bold",
-            day.current ? "bg-primary text-primary-foreground" : "text-foreground"
-          )}>
-            {day.date}
-          </div>
           <p className={cn(
-              "text-xs font-semibold",
+              "text-sm font-semibold",
               day.current ? "text-primary" : "text-muted-foreground"
           )}>
               {day.short}
           </p>
+          <div className={cn(
+            "w-9 h-9 mx-auto flex items-center justify-center text-xl font-bold text-foreground"
+          )}>
+            {day.date}
+          </div>
         </div>
       ))}
     </div>

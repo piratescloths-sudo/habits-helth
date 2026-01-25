@@ -13,17 +13,16 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import type { Habit } from "@/lib/data";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
-  time: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]\s(AM|PM)$/, "Please enter a valid time (e.g. 8:00 AM)"),
+  description: z.string().min(3, "Please add a short description."),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 type AddHabitFormProps = {
-  onFormSubmit: (data: Omit<Habit, "id" | "status" | "icon" >) => void;
+  onFormSubmit: (data: FormValues) => void;
 };
 
 export function AddHabitForm({ onFormSubmit }: AddHabitFormProps) {
@@ -31,7 +30,7 @@ export function AddHabitForm({ onFormSubmit }: AddHabitFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      time: "",
+      description: "",
     },
   });
   
@@ -57,12 +56,12 @@ export function AddHabitForm({ onFormSubmit }: AddHabitFormProps) {
         />
         <FormField
           control={form.control}
-          name="time"
+          name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Time</FormLabel>
+              <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input placeholder="e.g. 8:00 AM" {...field} />
+                <Input placeholder="e.g. Daily • 15 minutes" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -13,7 +13,7 @@ export default function ProfilePage() {
   const profileImage = PlaceHolderImages.find((p) => p.id === "profile");
   
   return (
-    <div className="space-y-8 p-4">
+    <div className="space-y-8">
       {/* Profile Header */}
       <div className="flex items-center gap-4">
           <Avatar className="h-20 w-20 border-4 border-card">

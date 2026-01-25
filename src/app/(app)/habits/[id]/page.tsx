@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
-import { habits } from "@/lib/data";
+import { Habit } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -10,12 +10,15 @@ import {
   MoreHorizontal,
   TrendingUp,
   Check,
-  X,
+  X as XIcon,
   Plus,
   ChevronRight,
 } from "lucide-react";
 import * as icons from "lucide-react";
 import { ChartContainer } from "@/components/ui/chart";
+import { useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
+import { doc } from "firebase/firestore";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const chartConfig = {
   value: {
@@ -51,7 +54,25 @@ function WeeklyCompletionChart({ data }: { data: { day: string; value: number }[
 export default function HabitDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const habit = habits.find((h) => h.id === params.id);
+  const habitId = params.id as string;
+  
+  const { user } = useUser();
+  const firestore = useFirestore();
+
+  const habitRef = useMemoFirebase(() => {
+    if (!user || !habitId) return null;
+    return doc(firestore, 'users', user.uid, 'habits', habitId);
+  }, [firestore, user, habitId]);
+  
+  const { data: habit, isLoading } = useDoc<Habit>(habitRef);
+
+  if (isLoading) {
+    return <div className="space-y-6">
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-24 w-full" />
+        <Skeleton className="h-64 w-full" />
+    </div>
+  }
 
   if (!habit) {
     return (
@@ -66,7 +87,7 @@ export default function HabitDetailPage() {
   const historyIcons = {
     logged: <Check className="h-5 w-5 text-primary-foreground" />,
     completed: <Check className="h-5 w-5 text-primary-foreground" />,
-    missed: <X className="h-5 w-5 text-destructive-foreground" />,
+    missed: <XIcon className="h-5 w-5 text-destructive-foreground" />,
   };
   const historyBg = {
     logged: "bg-primary",

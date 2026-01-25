@@ -3,12 +3,43 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { userProfile } from "@/lib/data";
+import { UserProfile } from "@/lib/data";
 import { Bell, Flag } from "lucide-react";
 import Link from "next/link";
+import { useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
+import { doc } from 'firebase/firestore';
+import { Skeleton } from "../ui/skeleton";
 
 export function DashboardHeader() {
+  const { user } = useUser();
+  const firestore = useFirestore();
+
+  const userProfileRef = useMemoFirebase(() => {
+    if (!user) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [firestore, user]);
+
+  const { data: userProfile, isLoading } = useDoc<UserProfile>(userProfileRef);
   const profileImage = PlaceHolderImages.find((p) => p.id === "profile");
+  
+  if (isLoading || !userProfile) {
+    return (
+        <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+                <Skeleton className="h-10 w-10 rounded-full" />
+                <div className="space-y-1">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-5 w-32" />
+                </div>
+            </div>
+            <div className="flex items-center gap-2">
+                <Skeleton className="h-9 w-9 rounded-full" />
+                <Skeleton className="h-9 w-9 rounded-full" />
+            </div>
+        </div>
+    )
+  }
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">

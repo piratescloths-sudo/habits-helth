@@ -29,9 +29,14 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { userProfile as initialProfile } from "@/lib/data";
+import { UserProfile } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Camera } from "lucide-react";
+import { useUser, useFirestore, setDocumentNonBlocking } from "@/firebase";
+import { doc } from 'firebase/firestore';
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -43,22 +48,38 @@ const profileSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
 type ProfileFormProps = {
-  profile: typeof initialProfile;
+  profile: UserProfile;
   onUpdate: (data: ProfileFormValues) => void;
 };
 
-export function ProfileForm({ profile, onUpdate }: ProfileFormProps) {
+export function ProfileForm({ profile }: ProfileFormProps) {
+  const { user } = useUser();
+  const firestore = useFirestore();
+  const { toast } = useToast();
+  const router = useRouter();
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name: profile.name,
       age: profile.age,
       goals: profile.goals,
-      preferredTime: profile.preferredTime as "Morning" | "Afternoon" | "Night",
+      preferredTime: profile.preferredTime as "Morning" | "Afternoon" | "Night" | undefined,
     },
   });
 
   const profileImage = PlaceHolderImages.find((p) => p.id === "profile");
+
+  const onSubmit = (data: ProfileFormValues) => {
+    if (!user) return;
+    const userProfileRef = doc(firestore, 'users', user.uid);
+    setDocumentNonBlocking(userProfileRef, data, { merge: true });
+    toast({
+        title: "Profile Updated",
+        description: "Your profile has been saved.",
+    });
+    router.push('/profile');
+  };
 
   return (
     <Card>
@@ -70,7 +91,7 @@ export function ProfileForm({ profile, onUpdate }: ProfileFormProps) {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onUpdate)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex flex-col items-center space-y-4">
               <div className="relative">
                 <Avatar className="h-24 w-24">

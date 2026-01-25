@@ -14,10 +14,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Apple, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useState } from "react";
+import { Apple, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { GoogleIcon } from "../icons/google";
+import { useAuth, initiateEmailSignUp } from "@/firebase";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -29,7 +30,8 @@ const formSchema = z.object({
 });
 
 export function SignupForm() {
-  const router = useRouter();
+  const auth = useAuth();
+  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,10 +41,18 @@ export function SignupForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    // On successful signup, redirect to dashboard
-    router.push("/dashboard");
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      initiateEmailSignUp(auth, values.email, values.password);
+      // The onAuthStateChanged listener in FirebaseProvider will create the user profile
+      // and handle redirection via the protected route layout.
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Sign-up Failed",
+        description: error.message || "An unexpected error occurred.",
+      });
+    }
   }
 
   return (

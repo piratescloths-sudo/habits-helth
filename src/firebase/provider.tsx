@@ -2,9 +2,11 @@
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
 import { FirebaseApp } from 'firebase/app';
-import { Firestore } from 'firebase/firestore';
+import { Firestore, doc } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener'
+import { setDocumentNonBlocking } from './non-blocking-updates';
+import { UserProfile } from '@/lib/data';
 
 interface FirebaseProviderProps {
   children: ReactNode;
@@ -79,6 +81,21 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
     const unsubscribe = onAuthStateChanged(
       auth,
       (firebaseUser) => { // Auth state determined
+        if (firebaseUser) {
+            const { creationTime, lastSignInTime } = firebaseUser.metadata;
+            const isNewUser = creationTime && lastSignInTime && (new Date(lastSignInTime).getTime() - new Date(creationTime).getTime() < 5000);
+            
+            if (isNewUser) {
+                const userDocRef = doc(firestore, 'users', firebaseUser.uid);
+                const newUserProfile: Omit<UserProfile, 'id'> = {
+                    name: firebaseUser.displayName || 'New User',
+                    email: firebaseUser.email || '',
+                    levelTitle: "Pro Member • Level 1",
+                    preferredTime: "Morning",
+                };
+                setDocumentNonBlocking(userDocRef, newUserProfile, { merge: true });
+            }
+        }
         setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
       },
       (error) => { // Auth listener error
@@ -87,7 +104,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
       }
     );
     return () => unsubscribe(); // Cleanup
-  }, [auth]); // Depends on the auth instance
+  }, [auth, firestore]); // Depends on the auth instance
 
   // Memoize the context value
   const contextValue = useMemo((): FirebaseContextState => {

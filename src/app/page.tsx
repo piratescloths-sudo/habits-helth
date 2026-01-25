@@ -1,10 +1,31 @@
+"use client";
+
 import Link from "next/link";
 import { LoginForm } from "@/components/auth/login-form";
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/firebase";
+import { useEffect } from "react";
 
 export default function LoginPage() {
   const authHeroImage = PlaceHolderImages.find((p) => p.id === "auth-hero");
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoading && user) {
+      router.replace('/dashboard');
+    }
+  }, [user, isUserLoading, router]);
+
+  if (isUserLoading || user) {
+    return (
+        <div className="flex min-h-dvh w-full flex-col items-center justify-center bg-background">
+            <p>Loading...</p>
+        </div>
+    )
+  }
 
   return (
     <div className="flex min-h-dvh w-full flex-col items-center bg-background">

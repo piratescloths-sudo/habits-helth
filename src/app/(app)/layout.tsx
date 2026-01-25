@@ -1,18 +1,46 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { BottomNav } from "@/components/app/bottom-nav";
 import { AddHabitForm } from "@/components/app/add-habit-form";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { HabitProvider, useHabits } from "@/components/app/habit-provider";
 import { Sidebar } from "@/components/app/sidebar";
+import { useUser } from "@/firebase";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { isAddDialogOpen, setIsAddDialogOpen, addHabit } = useHabits();
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.replace("/");
+    }
+  }, [user, isUserLoading, router]);
+
+  if (isUserLoading || !user) {
+    return (
+      <div className="flex min-h-dvh w-full bg-background">
+        <aside className="hidden md:flex flex-col w-64 border-r bg-card p-4 space-y-2">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+        </aside>
+        <main className="flex-1 p-8 space-y-4">
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-64 w-full" />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -26,7 +54,6 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogContent className="p-0 bg-card border-none">
           <DialogTitle className="sr-only">Add New Habit</DialogTitle>
-          <DialogDescription className="sr-only">A form to create a new habit to track.</DialogDescription>
           <AddHabitForm onFormSubmit={addHabit} />
         </DialogContent>
       </Dialog>

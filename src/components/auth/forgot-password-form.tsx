@@ -17,6 +17,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { useAuth } from "@/firebase";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -25,6 +27,7 @@ const formSchema = z.object({
 });
 
 export function ForgotPasswordForm() {
+  const auth = useAuth();
   const { toast } = useToast();
   const [submitted, setSubmitted] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -34,14 +37,21 @@ export function ForgotPasswordForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    // Mock sending email
-    setSubmitted(true);
-    toast({
-      title: "Check your email",
-      description: "A password reset link has been sent to your email address.",
-    });
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      await sendPasswordResetEmail(auth, values.email);
+      setSubmitted(true);
+      toast({
+        title: "Check your email",
+        description: "A password reset link has been sent to your email address.",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to send password reset email.",
+      });
+    }
   }
 
   if (submitted) {

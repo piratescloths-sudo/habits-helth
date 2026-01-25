@@ -18,7 +18,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { userProfile } from "@/lib/data";
+import { UserProfile } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { useTheme } from "@/components/theme-provider";
 import { useRouter } from "next/navigation";
@@ -34,6 +34,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useUser, useFirestore, useDoc, useMemoFirebase, useAuth } from "@/firebase";
+import { doc } from 'firebase/firestore';
+import { signOut } from "firebase/auth";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const SettingsItem = ({
   icon: Icon,
@@ -78,6 +82,17 @@ const SettingsItem = ({
 };
 
 export default function SettingsPage() {
+  const { user } = useUser();
+  const firestore = useFirestore();
+  const auth = useAuth();
+
+  const userProfileRef = useMemoFirebase(() => {
+    if (!user) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [firestore, user]);
+
+  const { data: userProfile, isLoading } = useDoc<UserProfile>(userProfileRef);
+
   const profileImage = PlaceHolderImages.find((p) => p.id === "profile");
   const { theme, setTheme } = useTheme();
   const router = useRouter();
@@ -87,13 +102,42 @@ export default function SettingsPage() {
     setTheme(checked ? "dark" : "light");
   };
 
-  const handleLogout = () => {
-    toast({
-      title: "Logged Out",
-      description: "You have been successfully logged out.",
-    });
-    router.push("/");
+  const handleLogout = async () => {
+    try {
+        await signOut(auth);
+        toast({
+            title: "Logged Out",
+            description: "You have been successfully logged out.",
+        });
+        router.push("/");
+    } catch (error) {
+        toast({
+            variant: "destructive",
+            title: "Logout Failed",
+            description: "An error occurred while logging out.",
+        });
+    }
   };
+
+  if (isLoading || !userProfile) {
+      return (
+          <div className="space-y-8 -mx-4 md:mx-0 -mt-6 md:-mt-8 bg-background pb-28 md:pb-8">
+              <main className="px-4 space-y-8">
+                <Skeleton className="h-8 w-32 hidden md:block" />
+                <div className="flex flex-col items-center text-center space-y-2">
+                    <Skeleton className="h-24 w-24 rounded-full" />
+                    <Skeleton className="h-8 w-48" />
+                    <Skeleton className="h-4 w-32" />
+                </div>
+                <div className="space-y-4">
+                    <Skeleton className="h-6 w-40" />
+                    <Skeleton className="h-14 w-full" />
+                    <Skeleton className="h-14 w-full" />
+                </div>
+              </main>
+          </div>
+      )
+  }
 
   return (
     <div className="space-y-8 -mx-4 md:mx-0 -mt-6 md:-mt-8 bg-background pb-28 md:pb-8">

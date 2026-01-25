@@ -2,7 +2,6 @@
 "use client";
 
 import Link from "next/link";
-import { userProfile } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,10 @@ import {
 import { StreakOverview } from "@/components/app/streak-overview";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
+import { UserProfile } from "@/lib/data";
+import { doc } from 'firebase/firestore';
+import { Skeleton } from "@/components/ui/skeleton";
 
 const goals = [
   {
@@ -37,8 +40,36 @@ const goals = [
 type TimePreference = "Morning" | "Afternoon" | "Night";
 
 export default function ProfilePage() {
+  const { user } = useUser();
+  const firestore = useFirestore();
+
+  const userProfileRef = useMemoFirebase(() => {
+    if (!user) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [firestore, user]);
+
+  const { data: userProfile, isLoading } = useDoc<UserProfile>(userProfileRef);
+
   const profileImage = PlaceHolderImages.find((p) => p.id === "profile");
   const [preferredTime, setPreferredTime] = useState<TimePreference>("Morning");
+
+  if (isLoading || !userProfile) {
+    return (
+        <div className="space-y-6 -mx-4 md:-mx-8 -mt-6 md:-mt-8">
+            <div className="flex items-center justify-between p-4 pt-8 bg-background relative">
+                <Skeleton className="h-10 w-10" />
+                <Skeleton className="h-6 w-24" />
+                <Skeleton className="h-10 w-10" />
+            </div>
+            <div className="flex flex-col items-center text-center space-y-4 px-4">
+                <Skeleton className="h-28 w-28 rounded-full" />
+                <Skeleton className="h-8 w-48" />
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-12 w-full max-w-xs" />
+            </div>
+        </div>
+    )
+  }
 
   return (
     <div className="space-y-6 -mx-4 md:-mx-8 -mt-6 md:-mt-8">

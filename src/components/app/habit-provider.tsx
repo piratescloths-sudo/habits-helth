@@ -1,12 +1,15 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { habits as initialHabits, Habit } from '@/lib/data';
+import { createContext, useContext, useState, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import type { AddHabitFormValues } from './add-habit-form';
+import { useUser, useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
+import { collection, doc, serverTimestamp } from 'firebase/firestore';
+import { Habit } from '@/lib/data';
 
 type HabitContextType = {
   habits: Habit[];
+  isLoadingHabits: boolean;
   addHabit: (newHabitData: AddHabitFormValues) => void;
   deleteHabit: (habitId: string) => void;
   handleStatusChange: (id: string) => void;
@@ -17,42 +20,32 @@ type HabitContextType = {
 const HabitContext = createContext<HabitContextType | undefined>(undefined);
 
 export function HabitProvider({ children }: { children: ReactNode }) {
-  const [habits, setHabits] = useState<Habit[]>([]);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-    const storedHabits = localStorage.getItem('habits');
-    if (storedHabits) {
-      setHabits(JSON.parse(storedHabits));
-    } else {
-      setHabits(initialHabits);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isClient) {
-      localStorage.setItem('habits', JSON.stringify(habits));
-    }
-  }, [habits, isClient]);
-
-
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const { user } = useUser();
+  const firestore = useFirestore();
   const { toast } = useToast();
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
+  const habitsQuery = useMemoFirebase(() => {
+    if (!user) return null;
+    return collection(firestore, 'users', user.uid, 'habits');
+  }, [firestore, user]);
+
+  const { data: habits, isLoading: isLoadingHabits } = useCollection<Habit>(habitsQuery);
 
   const handleStatusChange = (id: string) => {
-    setHabits((prevHabits) =>
-      prevHabits.map((h) => {
-        if (h.id === id) {
-          const newStatus = h.status === 'completed' ? 'pending' : 'completed';
-          return { ...h, status: newStatus };
-        }
-        return h;
-      })
-    );
+    if (!user || !habits) return;
+    const habit = habits.find((h) => h.id === id);
+    if (habit) {
+      const habitRef = doc(firestore, 'users', user.uid, 'habits', id);
+      const newStatus = habit.status === 'completed' ? 'pending' : 'completed';
+      updateDocumentNonBlocking(habitRef, { status: newStatus });
+    }
   };
   
   const addHabit = (data: AddHabitFormValues) => {
+    if (!user) return;
+    const habitsColRef = collection(firestore, 'users', user.uid, 'habits');
+
     const iconMap: { [key: string]: string } = {
       Health: 'Heart',
       Study: 'BookOpen',
@@ -71,27 +64,39 @@ export function HabitProvider({ children }: { children: ReactNode }) {
         description += ` at ${data.time.hour}:${data.time.minute} ${data.time.period}`;
     }
 
-    const newHabit: Habit = {
-      id: `habit-${Date.now()}`,
+    const newHabitData = {
+      userProfileId: user.uid,
       name: data.name,
       description: description,
       icon: iconMap[data.category] || 'Activity',
-      status: 'pending',
+      status: 'pending' as const,
       priority: data.priority,
+      category: data.category,
+      frequency: data.frequency,
+      startDate: serverTimestamp(),
     };
 
-    setHabits((prev) => [newHabit, ...prev]);
+    addDocumentNonBlocking(habitsColRef, newHabitData).catch(() => {
+        toast({
+            title: "Error",
+            description: "Could not add habit. Please try again.",
+            variant: "destructive"
+        })
+    });
+    
     setIsAddDialogOpen(false);
     toast({
       title: "Habit Added",
-      description: `"${newHabit.name}" has been added to your list.`,
+      description: `"${newHabitData.name}" has been added to your list.`,
     });
   };
 
   const deleteHabit = (habitId: string) => {
+    if (!user || !habits) return;
     const habitToDelete = habits.find(h => h.id === habitId);
-    setHabits((prev) => prev.filter((h) => h.id !== habitId));
-     if (habitToDelete) {
+    if (habitToDelete) {
+      const habitRef = doc(firestore, 'users', user.uid, 'habits', habitId);
+      deleteDocumentNonBlocking(habitRef);
       toast({
         title: "Habit Deleted",
         description: `"${habitToDelete.name}" has been deleted.`,
@@ -101,7 +106,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <HabitContext.Provider value={{ habits, addHabit, deleteHabit, handleStatusChange, isAddDialogOpen, setIsAddDialogOpen }}>
+    <HabitContext.Provider value={{ habits: habits || [], addHabit, deleteHabit, handleStatusChange, isAddDialogOpen, setIsAddDialogOpen, isLoadingHabits }}>
       {children}
     </HabitContext.Provider>
   );

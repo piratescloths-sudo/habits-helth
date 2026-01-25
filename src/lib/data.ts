@@ -4,6 +4,7 @@ export type Habit = {
   description: string;
   icon: string; // lucide-react icon name
   status: "completed" | "pending";
+  priority?: "Low" | "Medium" | "High";
 };
 
 export const habits: Habit[] = [
@@ -13,6 +14,7 @@ export const habits: Habit[] = [
     description: "Done at 08:32 AM",
     icon: "Droplet",
     status: "completed",
+    priority: "Medium",
   },
   {
     id: "2",
@@ -20,6 +22,7 @@ export const habits: Habit[] = [
     description: "Daily • 15 Minutes",
     icon: "Wind",
     status: "pending",
+    priority: "Low",
   },
   {
     id: "3",
@@ -27,6 +30,7 @@ export const habits: Habit[] = [
     description: "Evening • Goal: 300 pgs",
     icon: "BookOpen",
     status: "pending",
+    priority: "High",
   },
    {
     id: "4",
@@ -34,6 +38,7 @@ export const habits: Habit[] = [
     description: "3x Weekly • 05:00 PM",
     icon: "Dumbbell",
     status: "pending",
+    priority: "Medium",
   },
 ];
 

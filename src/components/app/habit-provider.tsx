@@ -77,6 +77,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
       description: description,
       icon: iconMap[data.category] || 'Activity',
       status: 'pending',
+      priority: data.priority,
     };
 
     setHabits((prev) => [newHabit, ...prev]);

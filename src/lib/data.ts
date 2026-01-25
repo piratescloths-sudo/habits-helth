@@ -105,10 +105,10 @@ export const habits: Habit[] = [
 ];
 
 export const userProfile = {
-  name: "Alex",
+  name: "Alex Johnson",
   email: "alex.doe@example.com",
   age: 28,
   goals: "Fitness, Productivity",
   preferredTime: "Morning",
-  levelTitle: "Level 12 Habit Master",
+  levelTitle: "Pro Member • Level 24",
 };

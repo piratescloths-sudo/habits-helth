@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Target } from "lucide-react";
-import { LoginForm } from "@/components/auth/login-form";
+import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   return (
     <div className="flex min-h-dvh w-full flex-col items-center bg-muted/40">
       <div className="flex w-full max-w-md flex-1 flex-col bg-background">
@@ -13,7 +13,7 @@ export default function LoginPage() {
           </Link>
         </header>
         <main className="flex flex-1 flex-col justify-center p-6 pt-0">
-          <LoginForm />
+          <ForgotPasswordForm />
         </main>
       </div>
     </div>

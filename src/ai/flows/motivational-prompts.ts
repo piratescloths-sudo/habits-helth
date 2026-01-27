@@ -17,6 +17,18 @@ const MotivationalPromptOutputSchema = z.object({
 export type MotivationalPromptOutput = z.infer<typeof MotivationalPromptOutputSchema>;
 
 export async function generateMotivationalPrompt(): Promise<MotivationalPromptOutput> {
+  if (
+    !process.env.GEMINI_API_KEY ||
+    process.env.GEMINI_API_KEY === 'YOUR_API_KEY_HERE'
+  ) {
+    console.warn(
+      'GEMINI_API_KEY is not set or is a placeholder. Returning a default motivational quote.'
+    );
+    return {
+      quote: 'The secret of getting ahead is getting started.',
+      author: 'Mark Twain',
+    };
+  }
   return motivationalPromptFlow();
 }
 

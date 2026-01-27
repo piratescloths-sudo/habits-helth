@@ -5,14 +5,16 @@ import type { HabitRecord } from "@/lib/data";
 import { differenceInWeeks, startOfDay, differenceInCalendarDays } from "date-fns";
 
 function calculateStats(records: HabitRecord[]): { total: number; rate: number; avg: string } {
-    if (!records || records.length === 0) {
+    const validRecords = (records || []).filter(r => r.date?.toDate);
+    
+    if (validRecords.length === 0) {
         return { total: 0, rate: 0, avg: "0/wk" };
     }
 
-    const completions = records.filter(r => r.status === 'Completed').length;
+    const completions = validRecords.filter(r => r.status === 'Completed').length;
     
-    const sortedRecords = records.map(r => r.date.toDate()).sort((a,b) => a.getTime() - b.getTime());
-    const firstRecordDate = sortedRecords[0];
+    const sortedDates = validRecords.map(r => r.date.toDate()).sort((a,b) => a.getTime() - b.getTime());
+    const firstRecordDate = sortedDates[0];
     const totalDays = differenceInCalendarDays(new Date(), firstRecordDate) + 1;
     const rate = totalDays > 0 ? Math.round((completions / totalDays) * 100) : 0;
     

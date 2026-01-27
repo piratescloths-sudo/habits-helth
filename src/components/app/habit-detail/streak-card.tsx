@@ -14,7 +14,7 @@ function calculateStreaks(records: HabitRecord[]): { currentStreak: number; best
   const completedDates = [
     ...new Set(
       records
-        .filter((r) => r.status === 'Completed' && r.date)
+        .filter((r) => r.status === 'Completed' && r.date?.toDate)
         .map((r) => startOfDay(r.date.toDate()).getTime())
     ),
   ].sort((a, b) => b - a).map(t => new Date(t));
@@ -43,7 +43,7 @@ function calculateStreaks(records: HabitRecord[]): { currentStreak: number; best
   // Calculate current streak
   let currentStreak = 0;
   const mostRecentCompletion = completedDates[0];
-  if (isToday(mostRecentCompletion) || isYesterday(mostRecentCompletion)) {
+  if (mostRecentCompletion && (isToday(mostRecentCompletion) || isYesterday(mostRecentCompletion))) {
     currentStreak = 1;
     for (let i = 0; i < completedDates.length - 1; i++) {
       const diff = differenceInCalendarDays(completedDates[i], completedDates[i + 1]);

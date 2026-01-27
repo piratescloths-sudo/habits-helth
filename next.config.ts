@@ -1,7 +1,10 @@
 import type {NextConfig} from 'next';
 
+const isGithubActions = process.env.GITHUB_ACTIONS === 'true'
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: isGithubActions ? 'export' : undefined,
+  basePath: isGithubActions ? "/habits-helth" : "",
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -9,6 +12,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
+    unoptimized: isGithubActions,
     remotePatterns: [
       {
         protocol: 'https',

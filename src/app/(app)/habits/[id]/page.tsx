@@ -10,9 +10,9 @@ import { HabitStreakCard } from "@/components/app/habit-detail/streak-card";
 import { HabitStatsGrid } from "@/components/app/habit-detail/stats-grid";
 import { HabitWeeklyCompletion } from "@/components/app/habit-detail/weekly-completion";
 import { HabitHistoryLog } from "@/components/app/habit-detail/history-log";
-import { useCollection, useMemoFirebase, useUser, useFirestore } from "@/firebase";
-import { collection } from 'firebase/firestore';
-import type { HabitRecord } from '@/lib/data';
+import { useCollection, useDoc, useMemoFirebase, useUser, useFirestore } from "@/firebase";
+import { collection, doc } from 'firebase/firestore';
+import type { HabitRecord, Habit } from '@/lib/data';
 
 export default function HabitDetailPage() {
   const router = useRouter();
@@ -21,9 +21,13 @@ export default function HabitDetailPage() {
   
   const { user } = useUser();
   const firestore = useFirestore();
-  const { habits, isLoadingHabits, handleStatusChange } = useHabits();
+  const { handleStatusChange } = useHabits();
 
-  const habit = habits.find((h) => h.id === habitId);
+  const habitRef = useMemoFirebase(() => {
+    if (!user || !habitId) return null;
+    return doc(firestore, 'users', user.uid, 'habits', habitId);
+  }, [user, firestore, habitId]);
+  const { data: habit, isLoading: isLoadingHabit } = useDoc<Habit>(habitRef);
 
   const habitRecordsQuery = useMemoFirebase(() => {
     if (!user || !habitId) return null;
@@ -34,7 +38,7 @@ export default function HabitDetailPage() {
   
   const isCompletedToday = habit?.status === 'completed';
 
-  if (isLoadingHabits || isLoadingRecords) {
+  if (isLoadingHabit || isLoadingRecords) {
     return (
       <div className="space-y-6 -mx-4 md:-mx-8 -mt-6 md:-mt-8">
         <header className="flex items-center justify-between p-4 bg-background z-10 sticky top-0 border-b">

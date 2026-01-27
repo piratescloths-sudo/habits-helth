@@ -2,10 +2,14 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, MoreHorizontal } from "lucide-react";
+import { ChevronLeft, MoreHorizontal, Plus } from "lucide-react";
 import * as icons from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useHabits } from "@/components/app/habit-provider";
+import { HabitStreakCard } from "@/components/app/habit-detail/streak-card";
+import { HabitStatsGrid } from "@/components/app/habit-detail/stats-grid";
+import { HabitWeeklyCompletion } from "@/components/app/habit-detail/weekly-completion";
+import { HabitHistoryLog } from "@/components/app/habit-detail/history-log";
 
 export default function HabitDetailPage() {
   const router = useRouter();
@@ -13,23 +17,27 @@ export default function HabitDetailPage() {
   const habitId = params.id as string;
 
   const { habits, isLoadingHabits } = useHabits();
-  
-  const habit = habits.find(h => h.id === habitId);
+
+  const habit = habits.find((h) => h.id === habitId);
 
   if (isLoadingHabits) {
     return (
       <div className="space-y-6 -mx-4 md:-mx-8 -mt-6 md:-mt-8">
         <header className="flex items-center justify-between p-4 bg-background z-10 sticky top-0 border-b">
-            <Skeleton className="h-10 w-10 rounded-lg" />
-            <Skeleton className="h-6 w-32 rounded-md" />
-            <Skeleton className="h-10 w-10 rounded-lg" />
+          <Skeleton className="h-10 w-10 rounded-lg" />
+          <Skeleton className="h-6 w-32 rounded-md" />
+          <Skeleton className="h-10 w-10 rounded-lg" />
         </header>
         <main className="px-4 space-y-6 pb-28 md:pb-8">
-            <div className="text-center space-y-2">
-                <Skeleton className="h-20 w-20 rounded-2xl mx-auto" />
-                <Skeleton className="h-8 w-48 mx-auto mt-4" />
-                <Skeleton className="h-5 w-64 mx-auto" />
-            </div>
+          <div className="text-center space-y-2">
+            <Skeleton className="h-20 w-20 rounded-2xl mx-auto" />
+            <Skeleton className="h-8 w-48 mx-auto mt-4" />
+            <Skeleton className="h-5 w-64 mx-auto" />
+          </div>
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-48 w-full" />
+          <Skeleton className="h-56 w-full" />
         </main>
       </div>
     );
@@ -40,8 +48,8 @@ export default function HabitDetailPage() {
       <div className="flex flex-col items-center justify-center h-full text-center">
         <h2 className="text-2xl font-bold">Habit Not Found</h2>
         <p className="text-muted-foreground">This habit may have been deleted.</p>
-        <Button onClick={() => router.push('/habits')} className="mt-4">
-            Go to All Habits
+        <Button onClick={() => router.push("/habits")} className="mt-4">
+          Go to All Habits
         </Button>
       </div>
     );
@@ -50,7 +58,7 @@ export default function HabitDetailPage() {
   const Icon = (icons as any)[habit.icon] || icons.Activity;
 
   return (
-    <div className="space-y-6 -mx-4 md:-mx-8 -mt-6 md:-mt-8 bg-background">
+    <div className="space-y-6 -mx-4 md:-mx-8 -mt-6 md:-mt-8 bg-background pb-28 md:pb-8">
       {/* Header */}
       <header className="flex items-center justify-between p-4 bg-background z-10 sticky top-0 border-b">
         <Button variant="ghost" size="icon" onClick={() => router.back()}>
@@ -62,7 +70,7 @@ export default function HabitDetailPage() {
         </Button>
       </header>
 
-      <main className="px-4 space-y-6 pb-28 md:pb-8">
+      <main className="px-4 space-y-6">
         {/* Habit Info */}
         <div className="text-center space-y-2">
           <div className="inline-block p-4 bg-card rounded-2xl mb-2">
@@ -71,7 +79,19 @@ export default function HabitDetailPage() {
           <h2 className="text-3xl font-bold font-headline">{habit.name}</h2>
           <p className="text-muted-foreground">{habit.description}</p>
         </div>
+
+        <HabitStreakCard />
+        <HabitStatsGrid />
+        <HabitWeeklyCompletion />
+        <HabitHistoryLog />
       </main>
+
+      <div className="fixed bottom-20 left-0 right-0 px-4 py-4 border-t bg-background md:static md:px-4 md:py-0 md:border-none md:mt-6">
+        <Button className="w-full h-14 text-lg font-bold">
+          <Plus className="h-6 w-6 mr-2" />
+          Log Intake
+        </Button>
+      </div>
     </div>
   );
 }

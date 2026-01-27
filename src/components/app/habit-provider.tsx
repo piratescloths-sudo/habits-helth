@@ -3,9 +3,10 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import type { AddHabitFormValues } from './add-habit-form';
-import { useUser, useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
+import { useUser, useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking, setDocumentNonBlocking } from '@/firebase';
 import { collection, doc, serverTimestamp } from 'firebase/firestore';
 import { Habit } from '@/lib/data';
+import { format } from 'date-fns';
 
 type HabitContextType = {
   habits: Habit[];
@@ -33,12 +34,30 @@ export function HabitProvider({ children }: { children: ReactNode }) {
   const { data: habits, isLoading: isLoadingHabits } = useCollection<Habit>(habitsQuery);
 
   const handleStatusChange = (id: string) => {
-    if (!user || !habits) return;
+    if (!user || !firestore || !habits) return;
     const habit = habits.find((h) => h.id === id);
     if (habit) {
-      const habitRef = doc(firestore, 'users', user.uid, 'habits', id);
       const newStatus = habit.status === 'completed' ? 'pending' : 'completed';
+      
+      // Update the habit object for immediate UI refresh on dashboard
+      const habitRef = doc(firestore, 'users', user.uid, 'habits', id);
       updateDocumentNonBlocking(habitRef, { status: newStatus });
+
+      // Manage the habit record for today to track history
+      const todayStr = format(new Date(), 'yyyy-MM-dd');
+      const recordRef = doc(firestore, 'users', user.uid, 'habits', id, 'records', todayStr);
+
+      if (newStatus === 'completed') {
+        // Create or overwrite today's record as 'Completed'
+        setDocumentNonBlocking(recordRef, {
+            habitId: id,
+            date: serverTimestamp(),
+            status: 'Completed',
+        }, {});
+      } else {
+        // If un-completing, delete the record for today
+        deleteDocumentNonBlocking(recordRef);
+      }
     }
   };
   

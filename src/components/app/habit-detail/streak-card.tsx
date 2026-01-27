@@ -3,7 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Zap } from "lucide-react";
 import type { HabitRecord } from "@/lib/data";
-import { isToday, isYesterday, differenceInCalendarDays } from "date-fns";
+import { isToday, isYesterday, differenceInCalendarDays, startOfDay } from "date-fns";
 import { useEffect, useState } from "react";
 
 function calculateStreaks(records: HabitRecord[]): { currentStreak: number; bestStreak: number } {
@@ -11,10 +11,13 @@ function calculateStreaks(records: HabitRecord[]): { currentStreak: number; best
     return { currentStreak: 0, bestStreak: 0 };
   }
 
-  const completedDates = records
-    .filter((r) => r.status === 'Completed' && r.date)
-    .map((r) => r.date.toDate())
-    .sort((a, b) => b.getTime() - a.getTime());
+  const completedDates = [
+    ...new Set(
+      records
+        .filter((r) => r.status === 'Completed' && r.date)
+        .map((r) => startOfDay(r.date.toDate()).getTime())
+    ),
+  ].sort((a, b) => b - a).map(t => new Date(t));
 
   if (completedDates.length === 0) {
     return { currentStreak: 0, bestStreak: 0 };
@@ -29,7 +32,7 @@ function calculateStreaks(records: HabitRecord[]): { currentStreak: number; best
       const diff = differenceInCalendarDays(completedDates[i], completedDates[i + 1]);
       if (diff === 1) {
         currentTempStreak++;
-      } else if (diff > 1) {
+      } else {
         bestStreak = Math.max(bestStreak, currentTempStreak);
         currentTempStreak = 1;
       }

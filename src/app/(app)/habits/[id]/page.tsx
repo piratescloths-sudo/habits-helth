@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, MoreHorizontal, Plus } from "lucide-react";
+import { ChevronLeft, MoreHorizontal, Plus, Check } from "lucide-react";
 import * as icons from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useHabits } from "@/components/app/habit-provider";
@@ -21,7 +21,7 @@ export default function HabitDetailPage() {
   
   const { user } = useUser();
   const firestore = useFirestore();
-  const { habits, isLoadingHabits } = useHabits();
+  const { habits, isLoadingHabits, handleStatusChange } = useHabits();
 
   const habit = habits.find((h) => h.id === habitId);
 
@@ -31,6 +31,8 @@ export default function HabitDetailPage() {
   }, [user, firestore, habitId]);
 
   const { data: habitRecords, isLoading: isLoadingRecords } = useCollection<HabitRecord>(habitRecordsQuery);
+  
+  const isCompletedToday = habit?.status === 'completed';
 
   if (isLoadingHabits || isLoadingRecords) {
     return (
@@ -99,9 +101,22 @@ export default function HabitDetailPage() {
       </main>
 
       <div className="fixed bottom-20 left-0 right-0 px-4 py-4 border-t bg-background md:static md:px-4 md:py-0 md:border-none md:mt-6">
-        <Button className="w-full h-14 text-lg font-bold">
-          <Plus className="h-6 w-6 mr-2" />
-          Log Intake
+        <Button 
+            className="w-full h-14 text-lg font-bold"
+            onClick={() => handleStatusChange(habit.id)}
+            disabled={!habit}
+        >
+          {isCompletedToday ? (
+            <>
+                <Check className="h-6 w-6 mr-2" />
+                Completed Today
+            </>
+          ) : (
+            <>
+                <Plus className="h-6 w-6 mr-2" />
+                Log Completion
+            </>
+          )}
         </Button>
       </div>
     </div>

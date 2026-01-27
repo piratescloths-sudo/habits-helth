@@ -4,7 +4,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Zap } from "lucide-react";
 import type { HabitRecord } from "@/lib/data";
 import { isToday, isYesterday, differenceInCalendarDays, startOfDay } from "date-fns";
-import { useEffect, useState } from "react";
 
 function calculateStreaks(records: HabitRecord[]): { currentStreak: number; bestStreak: number } {
   if (!records || records.length === 0) {
@@ -59,13 +58,7 @@ function calculateStreaks(records: HabitRecord[]): { currentStreak: number; best
 }
 
 export function HabitStreakCard({ habitRecords }: { habitRecords: HabitRecord[] }) {
-    const [streaks, setStreaks] = useState({ currentStreak: 0, bestStreak: 0 });
-
-    useEffect(() => {
-        if (habitRecords) {
-            setStreaks(calculateStreaks(habitRecords));
-        }
-    }, [habitRecords]);
+    const streaks = calculateStreaks(habitRecords || []);
 
     return (
         <Card className="bg-card p-6 text-center">

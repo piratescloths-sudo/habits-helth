@@ -1,11 +1,12 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { habits } from "@/lib/data";
 import { useState, useEffect } from "react";
+import { useHabits } from "@/components/app/habit-provider";
 
 
 export function CurrentProgress() {
+    const { habits } = useHabits();
     const [completed, setCompleted] = useState(0);
     const [total, setTotal] = useState(0);
     const [progress, setProgress] = useState(0);
@@ -16,7 +17,7 @@ export function CurrentProgress() {
         setCompleted(completedHabits);
         setTotal(totalHabits);
         setProgress(totalHabits > 0 ? (completedHabits / totalHabits) * 100 : 0);
-    }, []);
+    }, [habits]);
 
     return (
         <Card>

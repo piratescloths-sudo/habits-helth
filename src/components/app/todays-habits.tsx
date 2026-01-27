@@ -1,19 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import type { Habit } from "@/lib/data";
-import { habits as initialHabits } from "@/lib/data";
+import { useHabits } from "./habit-provider";
 import { HabitItem } from "./habit-item";
 import { AnimatePresence, motion } from "framer-motion";
 
 export function TodaysHabits() {
-  const [habits, setHabits] = useState(initialHabits);
-
-  const handleStatusChange = (id: string, status: Habit["status"]) => {
-    setHabits((prevHabits) =>
-      prevHabits.map((h) => (h.id === id ? { ...h, status } : h))
-    );
-  };
+  const { habits, handleStatusChange } = useHabits();
 
   return (
     <div className="space-y-3">

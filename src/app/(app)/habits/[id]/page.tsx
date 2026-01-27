@@ -1,44 +1,48 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { Habit } from "@/lib/data";
 import { Button } from "@/components/ui/button";
-import {
-  ChevronLeft,
-  MoreHorizontal,
-} from "lucide-react";
+import { ChevronLeft, MoreHorizontal } from "lucide-react";
 import * as icons from "lucide-react";
-import { useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
-import { doc } from "firebase/firestore";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useHabits } from "@/components/app/habit-provider";
 
 export default function HabitDetailPage() {
   const router = useRouter();
   const params = useParams();
   const habitId = params.id as string;
-  
-  const { user } = useUser();
-  const firestore = useFirestore();
 
-  const habitRef = useMemoFirebase(() => {
-    if (!user || !habitId) return null;
-    return doc(firestore, 'users', user.uid, 'habits', habitId);
-  }, [firestore, user, habitId]);
+  const { habits, isLoadingHabits } = useHabits();
   
-  const { data: habit, isLoading } = useDoc<Habit>(habitRef);
+  const habit = habits.find(h => h.id === habitId);
 
-  if (isLoading) {
-    return <div className="space-y-6">
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-24 w-full" />
-        <Skeleton className="h-64 w-full" />
-    </div>
+  if (isLoadingHabits) {
+    return (
+      <div className="space-y-6 -mx-4 md:-mx-8 -mt-6 md:-mt-8">
+        <header className="flex items-center justify-between p-4 bg-background z-10 sticky top-0 border-b">
+            <Skeleton className="h-10 w-10 rounded-lg" />
+            <Skeleton className="h-6 w-32 rounded-md" />
+            <Skeleton className="h-10 w-10 rounded-lg" />
+        </header>
+        <main className="px-4 space-y-6 pb-28 md:pb-8">
+            <div className="text-center space-y-2">
+                <Skeleton className="h-20 w-20 rounded-2xl mx-auto" />
+                <Skeleton className="h-8 w-48 mx-auto mt-4" />
+                <Skeleton className="h-5 w-64 mx-auto" />
+            </div>
+        </main>
+      </div>
+    );
   }
 
   if (!habit) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <p>Habit not found.</p>
+      <div className="flex flex-col items-center justify-center h-full text-center">
+        <h2 className="text-2xl font-bold">Habit Not Found</h2>
+        <p className="text-muted-foreground">This habit may have been deleted.</p>
+        <Button onClick={() => router.push('/habits')} className="mt-4">
+            Go to All Habits
+        </Button>
       </div>
     );
   }

@@ -12,6 +12,7 @@ import {
   Compass,
   Flag,
   Salad,
+  Dumbbell,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -20,6 +21,7 @@ const mainNavItems = [
   { href: "/progress", label: "Progress", icon: BarChart2 },
   { href: "/reports", label: "Reports", icon: Flag },
   { href: "/habits", label: "Habits", icon: Compass },
+  { href: "/workout", label: "Workout", icon: Dumbbell },
   { href: "/diet", label: "Diet", icon: Salad },
   { href: "/social", label: "Social", icon: Users },
 ];

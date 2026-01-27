@@ -29,6 +29,36 @@
       "description": "Abstract green background",
       "imageUrl": "https://images.unsplash.com/photo-1588097247274-a174dd59f20d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhYnN0cmFjdCUyMGdyZWVufGVufDB8fHx8MTc2OTM3MzUzN3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "abstract green"
+    },
+    {
+      "id": "workout-strength",
+      "description": "A person lifting weights in a gym.",
+      "imageUrl": "https://images.unsplash.com/photo-1604247584233-99c80a8aae2c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3ZWlnaHQlMjBsaWZ0aW5nfGVufDB8fHx8MTc2OTQ0MjU1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "weight lifting"
+    },
+    {
+      "id": "workout-yoga",
+      "description": "A person in a yoga pose.",
+      "imageUrl": "https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx5b2dhJTIwcG9zZXxlbnwwfHx8fDE3Njk0MjU4MDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "yoga pose"
+    },
+    {
+      "id": "workout-cardio",
+      "description": "A pair of running shoes on a road.",
+      "imageUrl": "https://images.unsplash.com/photo-1585944672394-4c58a015c1fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxydW5uaW5nJTIwc2hvZXN8ZW58MHx8fHwxNzY5NDI0MDg2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "running shoes"
+    },
+    {
+      "id": "workout-hiit",
+      "description": "A person doing a high-intensity interval training exercise.",
+      "imageUrl": "https://images.unsplash.com/photo-1726195220120-8ae07f34b6cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxqdW1wJTIwc3F1YXR8ZW58MHx8fHwxNzY5NTA0NDU4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "jump squat"
+    },
+    {
+      "id": "workout-recommended",
+      "description": "A man performing a full-body workout.",
+      "imageUrl": "https://images.unsplash.com/photo-1641971216917-20ba77cb406c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtYW4lMjB3b3Jrb3V0fGVufDB8fHx8MTc2OTUwNzEyM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man workout"
     }
   ]
 }

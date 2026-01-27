@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, BarChart2, Compass, User, Plus, Salad } from "lucide-react";
+import { Home, BarChart2, Plus, Salad, Dumbbell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { useHabits } from "./habit-provider";
@@ -10,9 +10,8 @@ import { useHabits } from "./habit-provider";
 const navItems = [
   { href: "/dashboard", label: "Today", icon: Home },
   { href: "/progress", label: "Progress", icon: BarChart2 },
+  { href: "/workout", label: "Workout", icon: Dumbbell },
   { href: "/diet", label: "Diet", icon: Salad },
-  { href: "/habits", label: "Habits", icon: Compass },
-  { href: "/profile", label: "Profile", icon: User },
 ];
 
 export function BottomNav() {

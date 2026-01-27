@@ -7,6 +7,7 @@ import { CalorieProgress } from "@/components/app/diet/calorie-progress";
 import { Macros } from "@/components/app/diet/macros";
 import { MealChecklist } from "@/components/app/diet/meal-checklist";
 import { Hydration } from "@/components/app/diet/hydration";
+import Link from "next/link";
 
 export default function DietPage() {
   return (
@@ -18,9 +19,11 @@ export default function DietPage() {
       <Hydration />
 
       <div className="fixed bottom-24 right-4 md:bottom-8 md:right-8">
-        <Button size="icon" className="h-16 w-16 rounded-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/50">
-            <Plus className="h-8 w-8" />
-        </Button>
+        <Link href="/diet/add">
+          <Button size="icon" className="h-16 w-16 rounded-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/50">
+              <Plus className="h-8 w-8" />
+          </Button>
+        </Link>
       </div>
     </div>
   );

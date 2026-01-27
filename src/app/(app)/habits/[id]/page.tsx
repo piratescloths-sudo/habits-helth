@@ -10,17 +10,29 @@ import { HabitStreakCard } from "@/components/app/habit-detail/streak-card";
 import { HabitStatsGrid } from "@/components/app/habit-detail/stats-grid";
 import { HabitWeeklyCompletion } from "@/components/app/habit-detail/weekly-completion";
 import { HabitHistoryLog } from "@/components/app/habit-detail/history-log";
+import { useCollection, useMemoFirebase, useUser, useFirestore } from "@/firebase";
+import { collection } from 'firebase/firestore';
+import type { HabitRecord } from '@/lib/data';
 
 export default function HabitDetailPage() {
   const router = useRouter();
   const params = useParams();
   const habitId = params.id as string;
-
+  
+  const { user } = useUser();
+  const firestore = useFirestore();
   const { habits, isLoadingHabits } = useHabits();
 
   const habit = habits.find((h) => h.id === habitId);
 
-  if (isLoadingHabits) {
+  const habitRecordsQuery = useMemoFirebase(() => {
+    if (!user || !habitId) return null;
+    return collection(firestore, 'users', user.uid, 'habits', habitId, 'records');
+  }, [user, firestore, habitId]);
+
+  const { data: habitRecords, isLoading: isLoadingRecords } = useCollection<HabitRecord>(habitRecordsQuery);
+
+  if (isLoadingHabits || isLoadingRecords) {
     return (
       <div className="space-y-6 -mx-4 md:-mx-8 -mt-6 md:-mt-8">
         <header className="flex items-center justify-between p-4 bg-background z-10 sticky top-0 border-b">
@@ -80,10 +92,10 @@ export default function HabitDetailPage() {
           <p className="text-muted-foreground">{habit.description}</p>
         </div>
 
-        <HabitStreakCard />
-        <HabitStatsGrid />
-        <HabitWeeklyCompletion />
-        <HabitHistoryLog />
+        <HabitStreakCard habitRecords={habitRecords || []} />
+        <HabitStatsGrid habitRecords={habitRecords || []} />
+        <HabitWeeklyCompletion habitRecords={habitRecords || []} />
+        <HabitHistoryLog habitRecords={habitRecords || []} />
       </main>
 
       <div className="fixed bottom-20 left-0 right-0 px-4 py-4 border-t bg-background md:static md:px-4 md:py-0 md:border-none md:mt-6">

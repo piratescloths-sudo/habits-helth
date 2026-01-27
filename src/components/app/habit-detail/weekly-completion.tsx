@@ -3,24 +3,50 @@
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
+import type { HabitRecord } from "@/lib/data";
+import { subDays, format, isWithinInterval, startOfDay, endOfDay, isSameDay } from "date-fns";
+import { cn } from "@/lib/utils";
 
-const chartData = [
-  { day: "M", value: 40 },
-  { day: "T", value: 60 },
-  { day: "W", value: 90 },
-  { day: "T", value: 80 },
-  { day: "F", value: 30 },
-  { day: "S", value: 75 },
-  { day: "S", value: 20 },
-];
+function getWeeklyCompletionData(records: HabitRecord[]): { chartData: { day: string; value: number }[]; completionRate: number; change: number } {
+    const today = startOfDay(new Date());
+    
+    const last7DaysInterval = { start: subDays(today, 6), end: endOfDay(today) };
+    const prev7DaysInterval = { start: subDays(today, 13), end: endOfDay(subDays(today, 7)) };
 
-const chartConfig = {
-  value: {
-    color: "hsl(var(--primary))",
-  },
-};
+    const recordsLast7Days = records.filter(r => r.date?.toDate && isWithinInterval(r.date.toDate(), last7DaysInterval));
+    const recordsPrev7Days = records.filter(r => r.date?.toDate && isWithinInterval(r.date.toDate(), prev7DaysInterval));
 
-export function HabitWeeklyCompletion() {
+    const completionsLast7Days = recordsLast7Days.filter(r => r.status === 'Completed').length;
+    const completionsPrev7Days = recordsPrev7Days.filter(r => r.status === 'Completed').length;
+    
+    // Assuming a daily habit for rate calculation for this component
+    const completionRate = Math.round((completionsLast7Days / 7) * 100);
+    const prevCompletionRate = Math.round((completionsPrev7Days / 7) * 100);
+    const change = completionRate - prevCompletionRate;
+
+    const chartData = Array.from({ length: 7 }).map((_, i) => {
+        const date = subDays(today, 6 - i);
+        const isCompleted = recordsLast7Days.some(r => r.status === 'Completed' && r.date?.toDate && isSameDay(r.date.toDate(), date));
+        return {
+            day: format(date, 'E'),
+            value: isCompleted ? 100 : 0, // 100 for completed, 0 otherwise
+        };
+    });
+
+    return { chartData, completionRate, change };
+}
+
+export function HabitWeeklyCompletion({ habitRecords }: { habitRecords: HabitRecord[] }) {
+  const { chartData, completionRate, change } = getWeeklyCompletionData(habitRecords || []);
+
+  const chartConfig = {
+    value: {
+      color: "hsl(var(--primary))",
+    },
+  };
+
+  const changeText = `${change >= 0 ? '+' : ''}${change}% WEEK`;
+
   return (
     <Card className="bg-card">
       <CardHeader className="flex-row items-center justify-between pb-2">
@@ -29,8 +55,8 @@ export function HabitWeeklyCompletion() {
             <p className="text-sm text-muted-foreground">Last 7 days performance</p>
         </div>
         <div className="text-right">
-            <p className="text-2xl font-bold text-primary">85%</p>
-            <p className="text-xs font-semibold text-primary">+15% WEEK</p>
+            <p className="text-2xl font-bold text-primary">{completionRate}%</p>
+            <p className={cn("text-xs font-semibold", change >= 0 ? "text-primary" : "text-destructive")}>{changeText}</p>
         </div>
       </CardHeader>
       <CardContent>

@@ -1,12 +1,12 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import type { AddHabitFormValues } from './add-habit-form';
 import { useUser, useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking, setDocumentNonBlocking } from '@/firebase';
-import { collection, doc, serverTimestamp } from 'firebase/firestore';
+import { collection, doc, serverTimestamp, getDoc, writeBatch } from 'firebase/firestore';
 import { Habit } from '@/lib/data';
-import { format } from 'date-fns';
+import { format, startOfToday, subDays } from 'date-fns';
 
 type HabitContextType = {
   habits: Habit[];
@@ -25,6 +25,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
   const firestore = useFirestore();
   const { toast } = useToast();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [missedHabitsChecked, setMissedHabitsChecked] = useState(false);
 
   const habitsQuery = useMemoFirebase(() => {
     if (!user) return null;
@@ -32,6 +33,59 @@ export function HabitProvider({ children }: { children: ReactNode }) {
   }, [firestore, user]);
 
   const { data: habits, isLoading: isLoadingHabits } = useCollection<Habit>(habitsQuery);
+
+  useEffect(() => {
+    if (isLoadingHabits || !habits || !user || !firestore || missedHabitsChecked) {
+      return;
+    }
+    setMissedHabitsChecked(true); // Run only once per session
+
+    const checkYesterdaysHabits = async () => {
+      const yesterday = subDays(startOfToday(), 1);
+      const yesterdayStr = format(yesterday, 'yyyy-MM-dd');
+      const batch = writeBatch(firestore);
+      let hasWrites = false;
+
+      for (const habit of habits) {
+        // Only handle daily habits for now.
+        if (habit.frequency !== 'Daily') {
+          continue;
+        }
+
+        // Don't check for habits that started after yesterday
+        if (habit.startDate?.toDate && habit.startDate.toDate() > yesterday) {
+          continue;
+        }
+
+        const recordRef = doc(firestore, 'users', user.uid, 'habits', habit.id, 'records', yesterdayStr);
+        
+        try {
+            const docSnap = await getDoc(recordRef);
+            if (!docSnap.exists()) {
+                batch.set(recordRef, {
+                    habitId: habit.id,
+                    date: yesterday,
+                    status: 'Missed',
+                });
+                hasWrites = true;
+            }
+        } catch (error) {
+            console.error("Error checking habit record:", error);
+        }
+      }
+
+      if (hasWrites) {
+        try {
+            await batch.commit();
+        } catch (error) {
+            console.error("Error committing missed habits batch:", error);
+        }
+      }
+    };
+
+    checkYesterdaysHabits();
+  }, [habits, isLoadingHabits, user, firestore, missedHabitsChecked]);
+
 
   const handleStatusChange = (id: string) => {
     if (!user || !firestore || !habits) return;

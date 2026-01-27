@@ -2,16 +2,22 @@
 
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { format, startOfWeek, addDays, isToday } from 'date-fns';
+import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
 import { Skeleton } from "@/components/ui/skeleton";
 
 type Day = {
   short: string;
   date: string;
-  current: boolean;
+  fullDate: Date;
+  selected: boolean;
 };
 
-export function WeekView() {
+type WeekViewProps = {
+    selectedDate: Date;
+    onDateSelect: (date: Date) => void;
+};
+
+export function WeekView({ selectedDate, onDateSelect }: WeekViewProps) {
   const [days, setDays] = useState<Day[]>([]);
   const [isClient, setIsClient] = useState(false);
 
@@ -25,11 +31,12 @@ export function WeekView() {
       weekDays.push({
         short: format(day, 'E').toUpperCase(),
         date: format(day, 'd'),
-        current: isToday(day),
+        fullDate: day,
+        selected: isSameDay(day, selectedDate),
       });
     }
     setDays(weekDays);
-  }, []);
+  }, [selectedDate]);
 
   if (!isClient) {
     return (
@@ -49,13 +56,14 @@ export function WeekView() {
       {days.map((day) => (
         <div
           key={day.short}
-          className={cn("flex-1 text-center space-y-2 p-2 rounded-lg",
-            day.current && "border-2 border-primary"
+          onClick={() => onDateSelect(day.fullDate)}
+          className={cn("flex-1 text-center space-y-2 p-2 rounded-lg cursor-pointer transition-colors hover:bg-card",
+            day.selected && "border-2 border-primary bg-card"
           )}
         >
           <p className={cn(
               "text-sm font-semibold",
-              day.current ? "text-primary" : "text-muted-foreground"
+              day.selected ? "text-primary" : "text-muted-foreground"
           )}>
               {day.short}
           </p>

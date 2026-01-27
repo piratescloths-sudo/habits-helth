@@ -20,3 +20,11 @@ export type UserProfile = {
     preferredTime?: "Morning" | "Afternoon" | "Night";
     levelTitle?: string;
 }
+
+export type HabitRecord = {
+  id: string;
+  habitId: string;
+  date: any; // Firestore timestamp
+  status: "Completed" | "Missed" | "Skipped";
+  notes?: string;
+};

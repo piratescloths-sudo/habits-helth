@@ -14,6 +14,10 @@ import { useCollection, useDoc, useMemoFirebase, useUser, useFirestore } from "@
 import { collection, doc } from 'firebase/firestore';
 import type { HabitRecord, Habit } from '@/lib/data';
 
+export async function generateStaticParams() {
+  return [];
+}
+
 export default function HabitDetailPage() {
   const router = useRouter();
   const params = useParams();

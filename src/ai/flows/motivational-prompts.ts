@@ -42,6 +42,15 @@ const motivationalPromptFlow = ai.defineFlow({
   name: 'motivationalPromptFlow',
   outputSchema: MotivationalPromptOutputSchema,
 }, async () => {
-  const {output} = await prompt({});
-  return output!;
+  try {
+    const {output} = await prompt({});
+    return output!;
+  } catch (error) {
+    console.error("Error generating motivational prompt from AI:", error);
+    // Return a fallback quote if the AI call fails
+    return {
+      quote: 'The journey of a thousand miles begins with a single step.',
+      author: 'Lao Tzu',
+    };
+  }
 });

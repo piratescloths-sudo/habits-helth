@@ -9,7 +9,16 @@ export function MotivationalPrompt() {
   const [prompt, setPrompt] = useState<MotivationalPromptOutput | null>(null);
 
   useEffect(() => {
-    generateMotivationalPrompt().then(setPrompt);
+    generateMotivationalPrompt()
+      .then(setPrompt)
+      .catch(err => {
+        console.error("Failed to fetch motivational prompt:", err);
+        // Set a fallback quote on error
+        setPrompt({
+          quote: 'The secret of getting ahead is getting started.',
+          author: 'Mark Twain',
+        });
+      });
   }, []);
 
   if (!prompt) {

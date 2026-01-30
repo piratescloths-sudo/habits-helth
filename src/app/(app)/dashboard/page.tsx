@@ -20,12 +20,16 @@ export default function DashboardPage() {
   const { user } = useUser();
   const firestore = useFirestore();
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [displayedHabits, setDisplayedHabits] = useState<Habit[]>([]);
   const [isLoadingDate, setIsLoadingDate] = useState(true);
 
   useEffect(() => {
-    if (!user || !firestore || isLoadingHabits) {
+    setSelectedDate(new Date());
+  }, []);
+
+  useEffect(() => {
+    if (!user || !firestore || isLoadingHabits || !selectedDate) {
       if (isLoadingHabits) setIsLoadingDate(true);
       return;
     };
@@ -65,6 +69,25 @@ export default function DashboardPage() {
 
     fetchHabitDataForDate();
   }, [selectedDate, habitsFromProvider, user, firestore, isLoadingHabits]);
+
+  if (!selectedDate) {
+    return (
+        <div className="space-y-8 pt-6">
+            <DashboardHeader />
+            <StreakCard />
+            <Skeleton className="h-[94px] w-full" />
+            <div className="space-y-4">
+                <Skeleton className="h-8 w-48" />
+                <div className="space-y-3">
+                    <Skeleton className="h-[76px] w-full rounded-xl" />
+                    <Skeleton className="h-[76px] w-full rounded-xl" />
+                    <Skeleton className="h-[76px] w-full rounded-xl" />
+                </div>
+            </div>
+            <MotivationalPrompt />
+        </div>
+      );
+  }
 
   const dateIsToday = isToday(selectedDate);
   const headingText = dateIsToday
